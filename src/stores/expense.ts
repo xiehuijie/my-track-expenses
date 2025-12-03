@@ -19,7 +19,7 @@ export const useExpenseStore = defineStore('expense', () => {
   const addExpense = (expense: Omit<Expense, 'id'>) => {
     const newExpense: Expense = {
       ...expense,
-      id: Date.now().toString()
+      id: crypto.randomUUID()
     }
     expenses.value.push(newExpense)
     saveToLocalStorage()

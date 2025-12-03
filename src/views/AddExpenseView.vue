@@ -30,7 +30,8 @@ const rules = {
 }
 
 const submitForm = async () => {
-  const { valid } = await form.value!.validate()
+  if (!form.value) return
+  const { valid } = await form.value.validate()
   if (valid && amount.value !== null) {
     expenseStore.addExpense({
       amount: amount.value,
