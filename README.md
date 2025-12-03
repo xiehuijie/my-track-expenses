@@ -13,8 +13,8 @@ A cross-platform expense tracking application built with web technologies and wr
 - Node.js (v18 or later recommended)
 - npm (v9 or later)
 - Android Studio (for Android development)
-- Android SDK (API 22+)
-- Java JDK 17+
+- Android SDK (API 23+)
+- Java JDK 21+
 
 ## Getting Started
 
@@ -43,6 +43,11 @@ npm run build
 ```
 
 ### Build for Android
+
+> **Note**: Capacitor 7 requires Java 21. If you have multiple Java versions installed, ensure `JAVA_HOME` is set to your Java 21 installation:
+> - **Linux**: `export JAVA_HOME=/usr/lib/jvm/java-21-openjdk`
+> - **macOS**: `export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home`
+> - **Windows**: `set JAVA_HOME=C:\Program Files\Java\jdk-21`
 
 1. **Build and sync to Android**:
    ```bash
