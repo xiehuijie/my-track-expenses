@@ -1,12 +1,14 @@
 # My Track Expenses
 
-A cross-platform expense tracking application built with web technologies and wrapped in a native shell using Capacitor.
+A cross-platform expense tracking application built with Vue 3, TypeScript, and wrapped in a native shell using Capacitor.
 
 ## Tech Stack
 
-- **Frontend**: Vanilla JavaScript with Vite
+- **Frontend**: Vue 3 + TypeScript + Vuetify (Material Design)
+- **State Management**: Pinia
+- **Routing**: Vue Router
 - **Native Shell**: Capacitor (webview-based native app)
-- **Platforms**: Android (primary), iOS (future)
+- **Platforms**: Android (Kotlin)
 
 ## Prerequisites
 
@@ -33,6 +35,19 @@ npm run dev
 ```
 
 Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+### Run Tests
+
+```bash
+npm run test
+```
+
+### Lint and Type Check
+
+```bash
+npm run lint
+npm run type-check
+```
 
 ### Build for Production
 
@@ -75,16 +90,25 @@ npm run build
 
 ```
 my-track-expenses/
-├── src/                    # Web application source code
+├── src/                    # Vue application source code
+│   ├── components/         # Reusable Vue components
+│   ├── views/              # Page components
+│   ├── router/             # Vue Router configuration
+│   ├── stores/             # Pinia stores
+│   ├── __tests__/          # Unit tests
+│   ├── App.vue             # Root Vue component
+│   └── main.ts             # Application entry point
 ├── public/                 # Static assets
 ├── dist/                   # Built web assets (generated)
-├── android/                # Android native project
+├── android/                # Android native project (Kotlin)
 │   ├── app/               # Android app module
 │   └── ...
 ├── capacitor.config.json   # Capacitor configuration
 ├── index.html             # Entry HTML file
 ├── package.json           # Node.js dependencies and scripts
-└── vite.config.js         # Vite configuration (if needed)
+├── tsconfig.json          # TypeScript configuration
+├── vite.config.ts         # Vite configuration
+└── vitest.config.ts       # Vitest test configuration
 ```
 
 ## Available Scripts
@@ -94,12 +118,30 @@ my-track-expenses/
 | `npm run dev` | Start development server |
 | `npm run build` | Build web app for production |
 | `npm run preview` | Preview production build |
+| `npm run lint` | Run ESLint |
+| `npm run type-check` | Run TypeScript type checking |
+| `npm run test` | Run unit tests |
+| `npm run test:watch` | Run tests in watch mode |
 | `npm run cap:sync` | Sync web assets to native platforms |
 | `npm run cap:copy` | Copy web assets to native platforms |
 | `npm run cap:open:android` | Open Android project in Android Studio |
 | `npm run build:android` | Build web app and sync to Android |
 | `npm run android:build:debug` | Build debug APK |
 | `npm run android:build:release` | Build release APK |
+
+## CI/CD
+
+This project uses GitHub Actions for continuous integration:
+
+- **Lint and Test**: Runs on all pushes and pull requests
+  - ESLint for code quality
+  - TypeScript type checking
+  - Unit tests with Vitest
+  - Web app build verification
+
+- **Android Build**: Builds debug APK after successful lint and test
+  - Requires Java 21
+  - Uploads APK as build artifact
 
 ## License
 
