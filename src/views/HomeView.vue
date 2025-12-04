@@ -2,11 +2,13 @@
 import { useRouter } from 'vue-router'
 import { useExpenseStore } from '@/stores/expense'
 import { useI18n } from 'vue-i18n'
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 
 const router = useRouter()
 const expenseStore = useExpenseStore()
 const { t } = useI18n()
+
+const isLoading = computed(() => expenseStore.isLoading)
 
 const formattedTotal = computed(() => {
   return expenseStore.totalExpenses.toFixed(2)
@@ -14,6 +16,11 @@ const formattedTotal = computed(() => {
 
 const recentExpenses = computed(() => {
   return expenseStore.expenses.slice(-5).reverse()
+})
+
+// Load expenses from database when component is mounted
+onMounted(async () => {
+  await expenseStore.loadExpenses()
 })
 </script>
 
@@ -31,7 +38,13 @@ const recentExpenses = computed(() => {
             {{ t('home.totalExpenses') }}
           </div>
           <div class="text-h3 font-weight-bold text-white">
-            ¥{{ formattedTotal }}
+            <v-progress-circular
+              v-if="isLoading"
+              indeterminate
+              color="white"
+              size="32"
+            />
+            <span v-else>¥{{ formattedTotal }}</span>
           </div>
         </v-card-text>
       </v-card>
@@ -47,8 +60,19 @@ const recentExpenses = computed(() => {
           {{ t('home.recentExpenses') }}
         </v-card-title>
         <v-card-text class="pa-0">
+          <!-- Loading state -->
+          <div
+            v-if="isLoading"
+            class="d-flex justify-center py-8"
+          >
+            <v-progress-circular
+              indeterminate
+              color="primary"
+            />
+          </div>
+          
           <v-list
-            v-if="recentExpenses.length > 0"
+            v-else-if="recentExpenses.length > 0"
             lines="two"
           >
             <v-list-item

@@ -17,6 +17,7 @@ import '@mdi/font/css/materialdesignicons.css'
 import './style.css'
 import { useAppConfigStore } from './stores/appConfig'
 import { themes } from './themes'
+import { initializeDatabase } from './db'
 
 // Create Vuetify themes from our theme system
 const vuetifyThemes: Record<string, object> = {}
@@ -81,4 +82,14 @@ app.use(i18n)
 const appConfig = useAppConfigStore()
 appConfig.initTheme()
 
-app.mount('#app')
+// Initialize database and then mount the app
+initializeDatabase()
+  .then(() => {
+    console.log('Database initialized successfully')
+    app.mount('#app')
+  })
+  .catch((error) => {
+    console.error('Failed to initialize database:', error)
+    // Mount app anyway to show error state or allow fallback
+    app.mount('#app')
+  })
