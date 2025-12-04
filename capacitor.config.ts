@@ -1,8 +1,12 @@
 import type { CapacitorConfig } from '@capacitor/cli';
+import { config as dotenvConfig } from 'dotenv';
+
+// Load environment variables from .env file
+dotenvConfig();
 
 const config: CapacitorConfig = {
   appId: 'fun.geek213.track_expenses',
-  appName: 'My Track Expenses',
+  appName: 'Track Expenses',
   webDir: 'dist',
 };
 

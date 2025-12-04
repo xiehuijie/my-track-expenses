@@ -2,16 +2,26 @@ import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
 import type { SupportedLocale } from '@/i18n'
 import { useI18n } from 'vue-i18n'
+import { 
+  themes, 
+  getTheme, 
+  applyThemeCSSVariables, 
+  type ThemeId,
+  type Theme
+} from '@/themes'
+import { useStatusBar } from '@/composables/useStatusBar'
 
-export type ThemeColor = 'blue' | 'green' | 'yellow' | 'pink' | 'purple'
+export type ThemeColor = ThemeId
 export type DarkMode = 'system' | 'light' | 'dark'
 
+// Legacy interface for backwards compatibility
 export interface ThemeColorValues {
   light: string
   dark: string
   main: string
 }
 
+// Legacy themeColors map for backwards compatibility
 export const themeColors: Record<ThemeColor, ThemeColorValues> = {
   blue: { light: '#1976D2', dark: '#90CAF9', main: '#2196F3' },
   green: { light: '#388E3C', dark: '#81C784', main: '#4CAF50' },
@@ -43,7 +53,7 @@ function getSavedLocale(): SupportedLocale {
 
 function getSavedThemeColor(): ThemeColor {
   const saved = localStorage.getItem(STORAGE_KEYS.THEME_COLOR)
-  if (saved && Object.keys(themeColors).includes(saved)) {
+  if (saved && Object.keys(themes).includes(saved)) {
     return saved as ThemeColor
   }
   return 'blue'
@@ -72,6 +82,11 @@ export const useAppConfigStore = defineStore('appConfig', () => {
     return darkMode.value === 'dark'
   })
 
+  const currentTheme = computed((): Theme => {
+    return getTheme(themeColor.value)
+  })
+
+  // Legacy computed for backwards compatibility
   const currentThemeColors = computed(() => {
     return themeColors[themeColor.value]
   })
@@ -79,6 +94,9 @@ export const useAppConfigStore = defineStore('appConfig', () => {
   const primaryColor = computed(() => {
     return isDark.value ? currentThemeColors.value.dark : currentThemeColors.value.light
   })
+
+  // Status bar helper
+  const statusBar = useStatusBar()
 
   // Actions
   function setLocale(newLocale: SupportedLocale) {
@@ -89,13 +107,13 @@ export const useAppConfigStore = defineStore('appConfig', () => {
   function setThemeColor(color: ThemeColor) {
     themeColor.value = color
     localStorage.setItem(STORAGE_KEYS.THEME_COLOR, color)
-    updateCSSVariables()
+    applyTheme()
   }
 
   function setDarkMode(mode: DarkMode) {
     darkMode.value = mode
     localStorage.setItem(STORAGE_KEYS.DARK_MODE, mode)
-    updateDocumentClass()
+    applyTheme()
   }
 
   function updateDocumentClass() {
@@ -106,11 +124,19 @@ export const useAppConfigStore = defineStore('appConfig', () => {
     }
   }
 
-  function updateCSSVariables() {
-    const colors = currentThemeColors.value
-    document.documentElement.style.setProperty('--theme-color-primary', colors.main)
-    document.documentElement.style.setProperty('--theme-color-primary-light', colors.light)
-    document.documentElement.style.setProperty('--theme-color-primary-dark', colors.dark)
+  function applyTheme() {
+    const theme = currentTheme.value
+    const dark = isDark.value
+    
+    // Update document class for dark/light mode
+    updateDocumentClass()
+    
+    // Apply CSS variables
+    applyThemeCSSVariables(theme, dark)
+    
+    // Update status bar
+    const modeColors = dark ? theme.dark : theme.light
+    statusBar.updateForTheme(dark, modeColors.statusBar.background)
   }
 
   function initTheme() {
@@ -119,17 +145,17 @@ export const useAppConfigStore = defineStore('appConfig', () => {
     mediaQuery.addEventListener('change', (e) => {
       systemDark.value = e.matches
       if (darkMode.value === 'system') {
-        updateDocumentClass()
+        applyTheme()
       }
     })
 
-    updateDocumentClass()
-    updateCSSVariables()
+    // Apply theme on initialization
+    applyTheme()
   }
 
   // Watch for changes
-  watch(isDark, updateDocumentClass)
-  watch(themeColor, updateCSSVariables)
+  watch(isDark, applyTheme)
+  watch(themeColor, applyTheme)
 
   return {
     // State
@@ -140,6 +166,7 @@ export const useAppConfigStore = defineStore('appConfig', () => {
     
     // Computed
     isDark,
+    currentTheme,
     currentThemeColors,
     primaryColor,
     
@@ -147,7 +174,8 @@ export const useAppConfigStore = defineStore('appConfig', () => {
     setLocale,
     setThemeColor,
     setDarkMode,
-    initTheme
+    initTheme,
+    applyTheme
   }
 })
 

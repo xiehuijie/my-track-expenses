@@ -16,12 +16,53 @@ import '@mdi/font/css/materialdesignicons.css'
 
 import './style.css'
 import { useAppConfigStore } from './stores/appConfig'
+import { themes } from './themes'
+
+// Create Vuetify themes from our theme system
+const vuetifyThemes: Record<string, object> = {}
+Object.entries(themes).forEach(([id, theme]) => {
+  // Light theme variant
+  vuetifyThemes[`${id}-light`] = {
+    dark: false,
+    colors: {
+      background: theme.light.surfaces.background,
+      surface: theme.light.surfaces.surface,
+      'surface-variant': theme.light.surfaces.surfaceVariant,
+      primary: theme.palette.primary.base,
+      'primary-darken-1': theme.palette.primary.darken1,
+      secondary: theme.palette.secondary.base,
+      'secondary-darken-1': theme.palette.secondary.darken1,
+      success: theme.palette.success.base,
+      warning: theme.palette.warning.base,
+      error: theme.palette.error.base,
+      info: theme.palette.info.base,
+    }
+  }
+  // Dark theme variant
+  vuetifyThemes[`${id}-dark`] = {
+    dark: true,
+    colors: {
+      background: theme.dark.surfaces.background,
+      surface: theme.dark.surfaces.surface,
+      'surface-variant': theme.dark.surfaces.surfaceVariant,
+      primary: theme.palette.primary.lighten3,
+      'primary-darken-1': theme.palette.primary.base,
+      secondary: theme.palette.secondary.base,
+      'secondary-darken-1': theme.palette.secondary.darken1,
+      success: theme.palette.success.base,
+      warning: theme.palette.warning.base,
+      error: theme.palette.error.base,
+      info: theme.palette.info.base,
+    }
+  }
+})
 
 const vuetify = createVuetify({
   components,
   directives,
   theme: {
-    defaultTheme: 'dark'
+    defaultTheme: 'blue-dark',
+    themes: vuetifyThemes
   },
   icons: {
     defaultSet: 'mdi'

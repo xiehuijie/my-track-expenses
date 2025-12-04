@@ -19,6 +19,13 @@ const useMainLayout = computed(() => {
 
 const isDark = computed(() => appConfig.isDark)
 
+// Compute the Vuetify theme name based on current theme color and dark mode
+const vuetifyTheme = computed(() => {
+  const themeColor = appConfig.themeColor
+  const mode = isDark.value ? 'dark' : 'light'
+  return `${themeColor}-${mode}`
+})
+
 // Back button handling
 let backButtonListener: (() => Promise<void>) | null = null
 
@@ -53,7 +60,7 @@ onUnmounted(async () => {
 </script>
 
 <template>
-  <v-app :theme="isDark ? 'dark' : 'light'">
+  <v-app :theme="vuetifyTheme">
     <MainLayout v-if="useMainLayout">
       <RouterView v-slot="{ Component }">
         <transition 
