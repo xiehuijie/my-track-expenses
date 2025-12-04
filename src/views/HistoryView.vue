@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useExpenseStore } from '@/stores/expense'
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 
 const router = useRouter()
 const expenseStore = useExpenseStore()
@@ -16,9 +16,14 @@ const formattedTotal = computed(() => {
   return expenseStore.totalExpenses.toFixed(2)
 })
 
-const deleteExpense = (id: string) => {
-  expenseStore.removeExpense(id)
+const deleteExpense = async (id: string) => {
+  await expenseStore.removeExpense(id)
 }
+
+// Load expenses from database when component is mounted
+onMounted(async () => {
+  await expenseStore.loadExpenses()
+})
 </script>
 
 <template>

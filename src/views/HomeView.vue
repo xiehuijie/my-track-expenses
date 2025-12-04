@@ -2,7 +2,7 @@
 import { useRouter } from 'vue-router'
 import { useExpenseStore } from '@/stores/expense'
 import { useI18n } from 'vue-i18n'
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 
 const router = useRouter()
 const expenseStore = useExpenseStore()
@@ -14,6 +14,11 @@ const formattedTotal = computed(() => {
 
 const recentExpenses = computed(() => {
   return expenseStore.expenses.slice(-5).reverse()
+})
+
+// Load expenses from database when component is mounted
+onMounted(async () => {
+  await expenseStore.loadExpenses()
 })
 </script>
 
