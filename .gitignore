@@ -40,3 +40,7 @@ android/capacitor-cordova-android-plugins/build/
 # Generated APK/AAB files
 *.apk
 *.aab
+
+# Generated config files
+vite.config.d.ts
+vite.config.js

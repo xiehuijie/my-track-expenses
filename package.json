@@ -21,6 +21,10 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@types/sql.js": "^1.4.9",
+    "@unocss/preset-wind4": "^66.5.10",
+    "@unocss/reset": "^66.5.10",
+    "@unocss/vite": "^66.5.10",
     "@vitejs/plugin-vue": "^6.0.2",
     "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.8.1",
@@ -29,17 +33,25 @@
     "jsdom": "^27.2.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.48.1",
+    "unocss": "^66.5.10",
     "vite": "^7.2.4",
     "vitest": "^4.0.15",
     "vue-tsc": "^3.1.5"
   },
   "dependencies": {
+    "@capacitor-community/sqlite": "^7.0.2",
     "@capacitor/android": "^7.4.4",
     "@capacitor/cli": "^7.4.4",
     "@capacitor/core": "^7.4.4",
     "@mdi/font": "^7.4.47",
+    "capacitor-plugin-safe-area": "^4.0.3",
+    "localforage": "^1.10.0",
     "pinia": "^3.0.4",
+    "reflect-metadata": "^0.2.2",
+    "sql.js": "^1.13.0",
+    "typeorm": "^0.3.28",
     "vue": "^3.5.25",
+    "vue-i18n": "^9.14.5",
     "vue-router": "^4.6.3",
     "vuetify": "^3.11.2"
   }
