@@ -41,8 +41,10 @@
   "dependencies": {
     "@capacitor-community/sqlite": "^7.0.2",
     "@capacitor/android": "^7.4.4",
+    "@capacitor/app": "^7.1.0",
     "@capacitor/cli": "^7.4.4",
     "@capacitor/core": "^7.4.4",
+    "@capacitor/haptics": "^7.0.2",
     "@mdi/font": "^7.4.47",
     "capacitor-plugin-safe-area": "^4.0.3",
     "localforage": "^1.10.0",
