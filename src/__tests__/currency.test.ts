@@ -7,6 +7,9 @@ import {
   formatCurrency,
   getAvailableCurrencyCodes,
   getCurrency,
+  getCurrencyCountryCode,
+  hasCurrencyFlag,
+  getCurrencyFlagUrl,
   DEFAULT_CURRENCY
 } from '../db/currency'
 
@@ -21,8 +24,9 @@ describe('Currency Configuration', () => {
     it('should have correct CNY configuration', () => {
       expect(currencies.CNY.code).toBe('CNY')
       expect(currencies.CNY.symbol).toBe('¥')
-      expect(currencies.CNY.name).toBe('Chinese Yuan')
+      expect(currencies.CNY.name).toBe('Yuan Renminbi') // From currency-codes library
       expect(currencies.CNY.decimalPlaces).toBe(2)
+      expect(currencies.CNY.countryCode).toBe('CN')
     })
 
     it('should have correct USD configuration', () => {
@@ -30,13 +34,25 @@ describe('Currency Configuration', () => {
       expect(currencies.USD.symbol).toBe('$')
       expect(currencies.USD.name).toBe('US Dollar')
       expect(currencies.USD.decimalPlaces).toBe(2)
+      expect(currencies.USD.countryCode).toBe('US')
     })
 
     it('should have correct KRW configuration', () => {
       expect(currencies.KRW.code).toBe('KRW')
       expect(currencies.KRW.symbol).toBe('₩')
-      expect(currencies.KRW.name).toBe('South Korean Won')
+      expect(currencies.KRW.name).toBe('Won') // From currency-codes library
       expect(currencies.KRW.decimalPlaces).toBe(0)
+      expect(currencies.KRW.countryCode).toBe('KR')
+    })
+
+    it('should have expanded currency support', () => {
+      // Test additional currencies from the expanded list
+      expect(currencies.EUR).toBeDefined()
+      expect(currencies.EUR.countryCode).toBe('EU')
+      expect(currencies.GBP).toBeDefined()
+      expect(currencies.GBP.countryCode).toBe('GB')
+      expect(currencies.JPY).toBeDefined()
+      expect(currencies.JPY.countryCode).toBe('JP')
     })
   })
 
@@ -115,7 +131,11 @@ describe('Currency Configuration', () => {
       expect(codes).toContain('CNY')
       expect(codes).toContain('USD')
       expect(codes).toContain('KRW')
-      expect(codes.length).toBe(3)
+      expect(codes).toContain('EUR')
+      expect(codes).toContain('GBP')
+      expect(codes).toContain('JPY')
+      // Now have 20 currencies with country flag mappings
+      expect(codes.length).toBeGreaterThanOrEqual(20)
     })
   })
 
@@ -128,6 +148,58 @@ describe('Currency Configuration', () => {
 
     it('should return undefined for invalid code', () => {
       expect(getCurrency('UNKNOWN')).toBeUndefined()
+    })
+  })
+
+  describe('getCurrencyCountryCode', () => {
+    it('should return country code for CNY', () => {
+      expect(getCurrencyCountryCode('CNY')).toBe('CN')
+    })
+
+    it('should return country code for USD', () => {
+      expect(getCurrencyCountryCode('USD')).toBe('US')
+    })
+
+    it('should return country code for EUR', () => {
+      expect(getCurrencyCountryCode('EUR')).toBe('EU')
+    })
+
+    it('should return undefined for unknown currency', () => {
+      expect(getCurrencyCountryCode('UNKNOWN')).toBeUndefined()
+    })
+  })
+
+  describe('hasCurrencyFlag', () => {
+    it('should return true for CNY (China)', () => {
+      expect(hasCurrencyFlag('CNY')).toBe(true)
+    })
+
+    it('should return true for USD (US)', () => {
+      expect(hasCurrencyFlag('USD')).toBe(true)
+    })
+
+    it('should return true for EUR (EU)', () => {
+      expect(hasCurrencyFlag('EUR')).toBe(true)
+    })
+
+    it('should return false for unknown currency', () => {
+      expect(hasCurrencyFlag('UNKNOWN')).toBe(false)
+    })
+  })
+
+  describe('getCurrencyFlagUrl', () => {
+    it('should return flag URL for CNY', () => {
+      const url = getCurrencyFlagUrl('CNY')
+      expect(url).toBe('https://purecatamphetamine.github.io/country-flag-icons/3x2/CN.svg')
+    })
+
+    it('should return flag URL for USD with 1x1 size', () => {
+      const url = getCurrencyFlagUrl('USD', '1x1')
+      expect(url).toBe('https://purecatamphetamine.github.io/country-flag-icons/1x1/US.svg')
+    })
+
+    it('should return undefined for unknown currency', () => {
+      expect(getCurrencyFlagUrl('UNKNOWN')).toBeUndefined()
     })
   })
 

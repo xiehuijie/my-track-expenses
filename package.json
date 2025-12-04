@@ -54,6 +54,8 @@
     "@capacitor/status-bar": "^7.0.3",
     "@mdi/font": "^7.4.47",
     "capacitor-plugin-safe-area": "^4.0.3",
+    "country-flag-icons": "^1.6.4",
+    "currency-codes": "^2.2.0",
     "localforage": "^1.10.0",
     "pinia": "^3.0.4",
     "reflect-metadata": "^0.2.2",
