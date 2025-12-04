@@ -45,6 +45,3 @@ android/capacitor-cordova-android-plugins/build/
 # Generated config files
 vite.config.d.ts
 vite.config.js
-
-android
-ios
