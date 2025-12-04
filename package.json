@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:host": "vite --host",
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts",
@@ -15,6 +16,7 @@
     "cap:sync": "cap sync",
     "cap:copy": "cap copy",
     "cap:open:android": "cap open android",
+    "cap:run:android": "cap run android",
     "build:android": "npm run build && npm run cap:sync",
     "android:build:debug": "cd android && ./gradlew assembleDebug",
     "android:build:release": "cd android && ./gradlew assembleRelease"

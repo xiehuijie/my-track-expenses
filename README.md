@@ -36,6 +36,39 @@ npm run dev
 
 Open [http://localhost:5173](http://localhost:5173) in your browser.
 
+### Development (Device/Emulator with Live Reload)
+
+Run the app on a real device or emulator with hot module replacement (HMR) for real-time updates:
+
+1. **Get your local IP address**:
+   - **Linux/macOS**: `ip addr` or `ifconfig`
+   - **Windows**: `ipconfig`
+
+2. **Start the development server with host access** (in one terminal):
+   ```bash
+   npm run dev:host
+   ```
+   This starts Vite with network access enabled. Note the URL shown (e.g., `http://192.168.1.100:5173`).
+
+3. **Sync to Android with live reload** (in another terminal):
+   ```bash
+   LIVE_RELOAD_SERVER=http://YOUR_LOCAL_IP:5173 npm run cap:sync
+   ```
+   Replace `YOUR_LOCAL_IP` with your actual local IP address.
+
+4. **Run on device/emulator**:
+   ```bash
+   npm run cap:run:android
+   ```
+   Or open Android Studio and run from there:
+   ```bash
+   npm run cap:open:android
+   ```
+
+> **Note**: Ensure your device/emulator and computer are on the same network. For emulators, you may need to use your host machine's IP address.
+
+> **Tip**: Any changes you make to the source code will be automatically reflected on the device/emulator via hot module replacement.
+
 ### Run Tests
 
 ```bash
@@ -103,7 +136,7 @@ my-track-expenses/
 ├── android/                # Android native project (Kotlin)
 │   ├── app/               # Android app module
 │   └── ...
-├── capacitor.config.json   # Capacitor configuration
+├── capacitor.config.ts     # Capacitor configuration (TypeScript)
 ├── index.html             # Entry HTML file
 ├── package.json           # Node.js dependencies and scripts
 ├── tsconfig.json          # TypeScript configuration
@@ -116,6 +149,7 @@ my-track-expenses/
 | Script | Description |
 |--------|-------------|
 | `npm run dev` | Start development server |
+| `npm run dev:host` | Start development server with network access (for live reload) |
 | `npm run build` | Build web app for production |
 | `npm run preview` | Preview production build |
 | `npm run lint` | Run ESLint |
@@ -125,6 +159,7 @@ my-track-expenses/
 | `npm run cap:sync` | Sync web assets to native platforms |
 | `npm run cap:copy` | Copy web assets to native platforms |
 | `npm run cap:open:android` | Open Android project in Android Studio |
+| `npm run cap:run:android` | Run app on connected Android device/emulator |
 | `npm run build:android` | Build web app and sync to Android |
 | `npm run android:build:debug` | Build debug APK |
 | `npm run android:build:release` | Build release APK |
