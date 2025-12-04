@@ -134,9 +134,9 @@ export const useAppConfigStore = defineStore('appConfig', () => {
     // Apply CSS variables
     applyThemeCSSVariables(theme, dark)
     
-    // Update status bar
+    // Update status bar - use the app's background color since status bar is transparent
     const modeColors = dark ? theme.dark : theme.light
-    statusBar.updateForTheme(dark, modeColors.statusBar.background)
+    statusBar.updateForTheme(dark, modeColors.surfaces.background)
   }
 
   function initTheme() {

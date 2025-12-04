@@ -61,6 +61,7 @@ const primaryColor = computed(() => appConfig.primaryColor)
     v-model="selectedTab"
     mode="shift"
     grow
+    mandatory
     :color="primaryColor"
     @update:model-value="onTabChange"
   >

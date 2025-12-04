@@ -84,27 +84,27 @@ export function useStatusBar() {
 
   /**
    * Update status bar to match the current theme
-   * Automatically determines the appropriate style based on background color
+   * Automatically determines the appropriate style based on app background color
+   * 
+   * @param _isDark - Whether dark mode is active (unused, kept for API compatibility)
+   * @param appBackgroundColor - The app's background color (used for transparent status bar)
    */
-  async function updateForTheme(isDark: boolean, primaryColor: string) {
+  async function updateForTheme(_isDark: boolean, appBackgroundColor: string) {
     if (!isNativePlatform) return;
 
     try {
-      if (isDark) {
-        // Dark mode: use the dark background color with light status bar icons
-        await setLightContent();
-        await setBackgroundColor('#121212');
+      // Since the status bar is transparent, the icons appear over the app's background
+      // We need to set the icon style based on the app's background color
+      const shouldUseDarkIcons = isLightBackground(appBackgroundColor);
+      
+      if (shouldUseDarkIcons) {
+        await setDarkContent();
       } else {
-        // Light mode: use the primary color as background
-        // Determine if the primary color is light or dark
-        const shouldUseDarkText = isLightBackground(primaryColor);
-        if (shouldUseDarkText) {
-          await setDarkContent();
-        } else {
-          await setLightContent();
-        }
-        await setBackgroundColor(primaryColor);
+        await setLightContent();
       }
+      
+      // Set the background color (used on Android)
+      await setBackgroundColor(appBackgroundColor);
     } catch {
       // Silently fail if status bar not supported
     }
