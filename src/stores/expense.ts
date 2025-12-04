@@ -103,49 +103,6 @@ export const useExpenseStore = defineStore('expense', () => {
     }
   }
 
-  /**
-   * Get recent expenses from database
-   */
-  const getRecentExpenses = async (limit: number = 10) => {
-    if (!isDatabaseInitialized()) {
-      console.warn('Database not initialized yet')
-      return []
-    }
-
-    try {
-      const expenseService = getExpenseService()
-      const recentExpenses = await expenseService.getRecentExpenses(limit)
-      return recentExpenses.map(e => ({
-        id: e.id,
-        amount: Number(e.amount),
-        description: e.description,
-        category: e.category,
-        date: e.date
-      }))
-    } catch (error) {
-      console.error('Failed to get recent expenses:', error)
-      return []
-    }
-  }
-
-  /**
-   * Get total amount from database
-   */
-  const getTotalAmount = async () => {
-    if (!isDatabaseInitialized()) {
-      console.warn('Database not initialized yet')
-      return 0
-    }
-
-    try {
-      const expenseService = getExpenseService()
-      return await expenseService.getTotalAmount()
-    } catch (error) {
-      console.error('Failed to get total amount:', error)
-      return 0
-    }
-  }
-
   return {
     expenses,
     totalExpenses,
@@ -153,8 +110,6 @@ export const useExpenseStore = defineStore('expense', () => {
     isInitialized,
     addExpense,
     removeExpense,
-    loadExpenses,
-    getRecentExpenses,
-    getTotalAmount
+    loadExpenses
   }
 })

@@ -40,12 +40,6 @@ const mockExpenseService = {
       mockExpenses.splice(index, 1)
     }
     return true
-  }),
-  getRecentExpenses: vi.fn(async (limit: number) => {
-    return mockExpenses.slice(-limit).reverse()
-  }),
-  getTotalAmount: vi.fn(async () => {
-    return mockExpenses.reduce((sum, e) => sum + e.amount, 0)
   })
 }
 

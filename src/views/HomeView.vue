@@ -8,6 +8,8 @@ const router = useRouter()
 const expenseStore = useExpenseStore()
 const { t } = useI18n()
 
+const isLoading = computed(() => expenseStore.isLoading)
+
 const formattedTotal = computed(() => {
   return expenseStore.totalExpenses.toFixed(2)
 })
@@ -36,7 +38,13 @@ onMounted(async () => {
             {{ t('home.totalExpenses') }}
           </div>
           <div class="text-h3 font-weight-bold text-white">
-            ¥{{ formattedTotal }}
+            <v-progress-circular
+              v-if="isLoading"
+              indeterminate
+              color="white"
+              size="32"
+            />
+            <span v-else>¥{{ formattedTotal }}</span>
           </div>
         </v-card-text>
       </v-card>
@@ -52,8 +60,19 @@ onMounted(async () => {
           {{ t('home.recentExpenses') }}
         </v-card-title>
         <v-card-text class="pa-0">
+          <!-- Loading state -->
+          <div
+            v-if="isLoading"
+            class="d-flex justify-center py-8"
+          >
+            <v-progress-circular
+              indeterminate
+              color="primary"
+            />
+          </div>
+          
           <v-list
-            v-if="recentExpenses.length > 0"
+            v-else-if="recentExpenses.length > 0"
             lines="two"
           >
             <v-list-item

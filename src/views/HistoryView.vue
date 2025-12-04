@@ -6,6 +6,8 @@ import { computed, onMounted } from 'vue'
 const router = useRouter()
 const expenseStore = useExpenseStore()
 
+const isLoading = computed(() => expenseStore.isLoading)
+
 const sortedExpenses = computed(() => {
   return [...expenseStore.expenses].sort((a, b) => 
     new Date(b.date).getTime() - new Date(a.date).getTime()
@@ -57,13 +59,30 @@ onMounted(async () => {
                   Total Expenses
                 </div>
                 <div class="text-h4 font-weight-bold">
-                  ${{ formattedTotal }}
+                  <v-progress-circular
+                    v-if="isLoading"
+                    indeterminate
+                    color="primary"
+                    size="28"
+                  />
+                  <span v-else>${{ formattedTotal }}</span>
                 </div>
               </v-card-text>
             </v-card>
 
+            <!-- Loading state -->
+            <div
+              v-if="isLoading"
+              class="d-flex justify-center py-8"
+            >
+              <v-progress-circular
+                indeterminate
+                color="primary"
+              />
+            </div>
+
             <v-list
-              v-if="sortedExpenses.length > 0"
+              v-else-if="sortedExpenses.length > 0"
               lines="two"
             >
               <v-list-item
