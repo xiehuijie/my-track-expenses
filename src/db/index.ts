@@ -1,8 +1,7 @@
-import initSqlJs from 'sql.js'
-import wasm from 'sql.js/dist/sql-wasm.wasm?url'
 import 'reflect-metadata'
-import { DataSource } from 'typeorm/browser'
-import { createInstance, INDEXEDDB } from 'localforage'
+import { DataSource, type DataSourceOptions } from 'typeorm/browser'
+import { Capacitor } from '@capacitor/core'
+import { CapacitorSQLite, SQLiteConnection } from '@capacitor-community/sqlite'
 import { Expense, User, Ledger, Account, Category, Tag, Transaction } from './entities'
 import { 
   ExpenseService, 
@@ -14,13 +13,7 @@ import {
   TransactionService 
 } from './services'
 
-const STORAGE_KEY = '__TRACK_EXPENSES_DB__'
-
-// Create storage instance for IndexedDB persistence
-const storage = createInstance({
-  driver: INDEXEDDB,
-  name: 'track-expenses-database'
-})
+const DATABASE_NAME = 'track_expenses'
 
 // Database initialization state
 let dataSource: DataSource | null = null
@@ -33,8 +26,76 @@ let tagService: TagService | null = null
 let transactionService: TransactionService | null = null
 let initPromise: Promise<void> | null = null
 
+// SQLite connection for native platforms
+let sqliteConnection: SQLiteConnection | null = null
+
+/**
+ * Check if running on a native platform (Android/iOS)
+ */
+function isNativePlatform(): boolean {
+  return Capacitor.isNativePlatform()
+}
+
+/**
+ * Get web-specific database configuration using sql.js with IndexedDB persistence
+ */
+async function getWebDataSourceOptions(): Promise<DataSourceOptions> {
+  // Dynamic imports for web-only dependencies
+  const initSqlJs = (await import('sql.js')).default
+  const wasm = (await import('sql.js/dist/sql-wasm.wasm?url')).default
+  const { createInstance, INDEXEDDB } = await import('localforage')
+  
+  const STORAGE_KEY = '__TRACK_EXPENSES_DB__'
+  
+  // Create storage instance for IndexedDB persistence
+  const storage = createInstance({
+    driver: INDEXEDDB,
+    name: 'track-expenses-database'
+  })
+  
+  // Load existing database from storage
+  const existingDatabase: Uint8Array | null = await storage.getItem(STORAGE_KEY)
+  const database = existingDatabase ?? new Uint8Array()
+  
+  // Initialize SQL.js
+  const SQLite = await initSqlJs({ locateFile: () => wasm })
+  
+  return {
+    type: 'sqljs',
+    driver: SQLite,
+    autoSave: true,
+    autoSaveCallback: (db: Uint8Array) => {
+      storage.setItem(STORAGE_KEY, db)
+    },
+    database,
+    logging: import.meta.env.DEV ? ['query', 'schema', 'info', 'log'] : false,
+    entities: [Expense, User, Ledger, Account, Category, Tag, Transaction],
+    synchronize: true
+  } as DataSourceOptions
+}
+
+/**
+ * Get native-specific database configuration using @capacitor-community/sqlite
+ */
+async function getNativeDataSourceOptions(): Promise<DataSourceOptions> {
+  // Create SQLite connection
+  sqliteConnection = new SQLiteConnection(CapacitorSQLite)
+  
+  return {
+    type: 'capacitor',
+    driver: sqliteConnection,
+    database: DATABASE_NAME,
+    mode: 'no-encryption',
+    version: 1,
+    logging: import.meta.env.DEV ? ['query', 'schema', 'info', 'log'] : false,
+    entities: [Expense, User, Ledger, Account, Category, Tag, Transaction],
+    synchronize: true
+  } as DataSourceOptions
+}
+
 /**
  * Initialize the database connection
+ * Uses native SQLite on Android/iOS and sql.js on web
  */
 export async function initializeDatabase(): Promise<void> {
   if (dataSource?.isInitialized) {
@@ -47,28 +108,19 @@ export async function initializeDatabase(): Promise<void> {
 
   initPromise = (async () => {
     try {
-      // Load existing database from storage
-      const existingDatabase: Uint8Array | null = await storage.getItem(STORAGE_KEY)
-      const database = existingDatabase ?? new Uint8Array()
-
-      // Initialize SQL.js
-      const SQLite = await initSqlJs({ locateFile: () => wasm })
+      const isNative = isNativePlatform()
+      console.log(`Initializing database for ${isNative ? 'native' : 'web'} platform`)
+      
+      // Get platform-specific data source options
+      const options = isNative 
+        ? await getNativeDataSourceOptions()
+        : await getWebDataSourceOptions()
 
       // Create TypeORM data source
-      dataSource = new DataSource({
-        type: 'sqljs',
-        driver: SQLite,
-        autoSave: true,
-        autoSaveCallback: (db: Uint8Array) => {
-          storage.setItem(STORAGE_KEY, db)
-        },
-        database,
-        logging: import.meta.env.DEV ? ['query', 'schema', 'info', 'log'] : false,
-        entities: [Expense, User, Ledger, Account, Category, Tag, Transaction],
-        synchronize: true
-      })
+      dataSource = new DataSource(options)
 
       await dataSource.initialize()
+      console.log('Database initialized successfully')
 
       // Initialize services
       expenseService = new ExpenseService(dataSource)
@@ -176,18 +228,58 @@ export function isDatabaseInitialized(): boolean {
 }
 
 /**
- * Export database as Uint8Array for backup
+ * Export database as JSON for backup
+ * Works on both native and web platforms
  */
-export async function exportDatabase(): Promise<Uint8Array | null> {
-  return storage.getItem<Uint8Array>(STORAGE_KEY)
+export async function exportDatabase(): Promise<string | null> {
+  if (!dataSource?.isInitialized) {
+    throw new Error('Database not initialized. Call initializeDatabase() first.')
+  }
+
+  if (isNativePlatform() && sqliteConnection) {
+    // For native platforms, export using SQLite JSON export
+    const db = await sqliteConnection.retrieveConnection(DATABASE_NAME, false)
+    const exportResult = await db.exportToJson('full')
+    return exportResult.export ? JSON.stringify(exportResult.export) : null
+  } else {
+    // For web, get the raw database from IndexedDB
+    const { createInstance, INDEXEDDB } = await import('localforage')
+    const storage = createInstance({
+      driver: INDEXEDDB,
+      name: 'track-expenses-database'
+    })
+    const data = await storage.getItem<Uint8Array>('__TRACK_EXPENSES_DB__')
+    return data ? btoa(String.fromCharCode(...data)) : null
+  }
 }
 
 /**
- * Import database from Uint8Array
+ * Import database from backup
+ * Works on both native and web platforms
  */
-export async function importDatabase(data: Uint8Array): Promise<void> {
-  await storage.setItem(STORAGE_KEY, data)
-  // Reinitialize database with new data
+export async function importDatabase(data: string): Promise<void> {
+  if (isNativePlatform() && sqliteConnection) {
+    // For native platforms, import using SQLite JSON import
+    await sqliteConnection.importFromJson(data)
+  } else {
+    // For web, restore from base64 encoded Uint8Array
+    const { createInstance, INDEXEDDB } = await import('localforage')
+    const storage = createInstance({
+      driver: INDEXEDDB,
+      name: 'track-expenses-database'
+    })
+    const binaryString = atob(data)
+    const bytes = new Uint8Array(binaryString.length)
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i)
+    }
+    await storage.setItem('__TRACK_EXPENSES_DB__', bytes)
+  }
+  
+  // Reset all services and reinitialize
+  if (dataSource?.isInitialized) {
+    await dataSource.destroy()
+  }
   dataSource = null
   expenseService = null
   userService = null
@@ -197,7 +289,33 @@ export async function importDatabase(data: Uint8Array): Promise<void> {
   tagService = null
   transactionService = null
   initPromise = null
+  sqliteConnection = null
   await initializeDatabase()
+}
+
+/**
+ * Close database connection
+ * Should be called when the app is closing
+ */
+export async function closeDatabase(): Promise<void> {
+  if (dataSource?.isInitialized) {
+    await dataSource.destroy()
+  }
+  
+  if (sqliteConnection) {
+    await sqliteConnection.closeAllConnections()
+    sqliteConnection = null
+  }
+  
+  dataSource = null
+  expenseService = null
+  userService = null
+  ledgerService = null
+  accountService = null
+  categoryService = null
+  tagService = null
+  transactionService = null
+  initPromise = null
 }
 
 // Re-export currency utilities

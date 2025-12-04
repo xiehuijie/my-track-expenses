@@ -8,6 +8,23 @@ const config: CapacitorConfig = {
   appId: 'fun.geek213.track_expenses',
   appName: 'Track Expenses',
   webDir: 'dist',
+  plugins: {
+    CapacitorSQLite: {
+      iosDatabaseLocation: 'Library/CapacitorDatabase',
+      iosIsEncryption: false,
+      iosKeychainPrefix: 'track-expenses-app',
+      iosBiometric: {
+        biometricAuth: false,
+        biometricTitle: 'Biometric login for Track Expenses'
+      },
+      androidIsEncryption: false,
+      androidBiometric: {
+        biometricAuth: false,
+        biometricTitle: 'Biometric login for Track Expenses',
+        biometricSubTitle: 'Log in using your biometric'
+      }
+    }
+  }
 };
 
 // Enable live reload for development on device/emulator
