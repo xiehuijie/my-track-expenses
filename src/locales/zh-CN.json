@@ -1,0 +1,66 @@
+{
+  "app": {
+    "name": "记账本"
+  },
+  "tabs": {
+    "details": "明细",
+    "statistics": "统计",
+    "assets": "资产",
+    "me": "我的"
+  },
+  "home": {
+    "totalExpenses": "总支出",
+    "recentExpenses": "最近支出",
+    "noExpenses": "暂无支出记录，开始记录您的消费吧！",
+    "addExpense": "记一笔",
+    "viewHistory": "查看历史"
+  },
+  "expense": {
+    "add": "添加支出",
+    "amount": "金额",
+    "description": "描述",
+    "category": "分类",
+    "date": "日期",
+    "save": "保存",
+    "cancel": "取消"
+  },
+  "categories": {
+    "food": "餐饮",
+    "transportation": "交通",
+    "shopping": "购物",
+    "entertainment": "娱乐",
+    "bills": "账单",
+    "healthcare": "医疗",
+    "education": "教育",
+    "travel": "旅行",
+    "other": "其他"
+  },
+  "settings": {
+    "title": "设置",
+    "language": "语言",
+    "theme": "主题",
+    "themeColor": "主题颜色",
+    "darkMode": "深色模式",
+    "followSystem": "跟随系统",
+    "light": "浅色",
+    "dark": "深色"
+  },
+  "colors": {
+    "blue": "蓝色",
+    "green": "绿色",
+    "yellow": "黄色",
+    "pink": "粉色",
+    "purple": "紫色"
+  },
+  "common": {
+    "confirm": "确认",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "save": "保存",
+    "back": "返回",
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功"
+  }
+}

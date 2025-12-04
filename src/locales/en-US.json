@@ -1,0 +1,66 @@
+{
+  "app": {
+    "name": "Track Expenses"
+  },
+  "tabs": {
+    "details": "Details",
+    "statistics": "Statistics",
+    "assets": "Assets",
+    "me": "Me"
+  },
+  "home": {
+    "totalExpenses": "Total Expenses",
+    "recentExpenses": "Recent Expenses",
+    "noExpenses": "No expenses recorded yet. Start tracking your spending!",
+    "addExpense": "Add Expense",
+    "viewHistory": "View History"
+  },
+  "expense": {
+    "add": "Add Expense",
+    "amount": "Amount",
+    "description": "Description",
+    "category": "Category",
+    "date": "Date",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "categories": {
+    "food": "Food & Dining",
+    "transportation": "Transportation",
+    "shopping": "Shopping",
+    "entertainment": "Entertainment",
+    "bills": "Bills & Utilities",
+    "healthcare": "Healthcare",
+    "education": "Education",
+    "travel": "Travel",
+    "other": "Other"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "themeColor": "Theme Color",
+    "darkMode": "Dark Mode",
+    "followSystem": "Follow System",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "colors": {
+    "blue": "Blue",
+    "green": "Green",
+    "yellow": "Yellow",
+    "pink": "Pink",
+    "purple": "Purple"
+  },
+  "common": {
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "save": "Save",
+    "back": "Back",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  }
+}

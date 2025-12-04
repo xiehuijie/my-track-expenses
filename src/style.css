@@ -1,4 +1,19 @@
 :root {
+  /* Theme color variables - will be updated dynamically */
+  --theme-color-primary: #2196F3;
+  --theme-color-primary-light: #1976D2;
+  --theme-color-primary-dark: #90CAF9;
+  
+  /* Safe area variables */
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+  
+  /* Tab bar height */
+  --tab-bar-height: 56px;
+  --add-button-size: 56px;
+  
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -13,71 +28,108 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Prevent scroll and zoom */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  touch-action: pan-x pan-y;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Prevent page zoom on iOS */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+}
+
 * {
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-}
-
-h1 {
-  font-size: 2em;
-  line-height: 1.1;
-  color: #4a90d9;
-  margin-bottom: 0.5em;
-}
-
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-.container {
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 80vh;
 }
 
-.subtitle {
-  color: #888;
-  margin-bottom: 2em;
+/* Dark mode styles */
+.dark {
+  color-scheme: dark;
 }
 
-.card {
-  padding: 2em;
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  margin-bottom: 2em;
-}
-
-.card p {
-  margin: 0.5em 0;
-}
-
-.footer {
-  color: #666;
-  font-size: 0.9em;
-}
-
+/* Light mode styles */
 @media (prefers-color-scheme: light) {
-  :root {
+  :root:not(.dark) {
     color: #213547;
     background-color: #ffffff;
   }
-  h1 {
-    color: #2a6aa6;
-  }
-  .card {
-    background-color: rgba(0, 0, 0, 0.05);
-  }
 }
+
+/* Force dark mode when class is present */
+.dark :root,
+:root.dark {
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #121212;
+}
+
+/* Tab bar styles */
+.tab-bar {
+  background-color: #ffffff;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.dark .tab-bar {
+  background-color: #1e1e1e;
+  border-top-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Status bar area */
+.status-bar-area {
+  height: var(--safe-area-top);
+  min-height: var(--safe-area-top);
+  width: 100%;
+}
+
+/* Bottom safe area */
+.bottom-safe-area {
+  height: var(--safe-area-bottom);
+  min-height: var(--safe-area-bottom);
+  width: 100%;
+}
+
+/* Main content area */
+.main-content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Scrollable content */
+.scrollable-content {
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Add button arc background */
+.add-button-arc {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(var(--add-button-size) + 20px);
+  height: calc(var(--add-button-size) / 2 + 10px);
+  background-color: inherit;
+  border-radius: 50% 50% 0 0;
+}
+
