@@ -13,7 +13,10 @@ import {
   TransactionService 
 } from './services'
 
+// Database configuration constants
 const DATABASE_NAME = 'track_expenses'
+const WEB_STORAGE_KEY = '__TRACK_EXPENSES_DB__'
+const WEB_STORAGE_NAME = 'track-expenses-database'
 
 // Database initialization state
 let dataSource: DataSource | null = null
@@ -37,24 +40,29 @@ function isNativePlatform(): boolean {
 }
 
 /**
+ * Get web storage instance for IndexedDB persistence
+ */
+async function getWebStorage() {
+  const { createInstance, INDEXEDDB } = await import('localforage')
+  return createInstance({
+    driver: INDEXEDDB,
+    name: WEB_STORAGE_NAME
+  })
+}
+
+/**
  * Get web-specific database configuration using sql.js with IndexedDB persistence
  */
 async function getWebDataSourceOptions(): Promise<DataSourceOptions> {
   // Dynamic imports for web-only dependencies
   const initSqlJs = (await import('sql.js')).default
   const wasm = (await import('sql.js/dist/sql-wasm.wasm?url')).default
-  const { createInstance, INDEXEDDB } = await import('localforage')
-  
-  const STORAGE_KEY = '__TRACK_EXPENSES_DB__'
   
   // Create storage instance for IndexedDB persistence
-  const storage = createInstance({
-    driver: INDEXEDDB,
-    name: 'track-expenses-database'
-  })
+  const storage = await getWebStorage()
   
   // Load existing database from storage
-  const existingDatabase: Uint8Array | null = await storage.getItem(STORAGE_KEY)
+  const existingDatabase: Uint8Array | null = await storage.getItem(WEB_STORAGE_KEY)
   const database = existingDatabase ?? new Uint8Array()
   
   // Initialize SQL.js
@@ -65,7 +73,7 @@ async function getWebDataSourceOptions(): Promise<DataSourceOptions> {
     driver: SQLite,
     autoSave: true,
     autoSaveCallback: (db: Uint8Array) => {
-      storage.setItem(STORAGE_KEY, db)
+      storage.setItem(WEB_STORAGE_KEY, db)
     },
     database,
     logging: import.meta.env.DEV ? ['query', 'schema', 'info', 'log'] : false,
@@ -230,25 +238,30 @@ export function isDatabaseInitialized(): boolean {
 /**
  * Export database as JSON for backup
  * Works on both native and web platforms
+ * @returns JSON string for native platforms, base64 encoded data for web
  */
 export async function exportDatabase(): Promise<string | null> {
   if (!dataSource?.isInitialized) {
     throw new Error('Database not initialized. Call initializeDatabase() first.')
   }
 
-  if (isNativePlatform() && sqliteConnection) {
+  if (isNativePlatform()) {
+    if (!sqliteConnection) {
+      throw new Error('Native SQLite connection not available.')
+    }
+    // Verify connection is open
+    const isOpen = await sqliteConnection.isConnection(DATABASE_NAME, false)
+    if (!isOpen.result) {
+      throw new Error('Database connection is not open.')
+    }
     // For native platforms, export using SQLite JSON export
     const db = await sqliteConnection.retrieveConnection(DATABASE_NAME, false)
     const exportResult = await db.exportToJson('full')
     return exportResult.export ? JSON.stringify(exportResult.export) : null
   } else {
     // For web, get the raw database from IndexedDB
-    const { createInstance, INDEXEDDB } = await import('localforage')
-    const storage = createInstance({
-      driver: INDEXEDDB,
-      name: 'track-expenses-database'
-    })
-    const data = await storage.getItem<Uint8Array>('__TRACK_EXPENSES_DB__')
+    const storage = await getWebStorage()
+    const data = await storage.getItem<Uint8Array>(WEB_STORAGE_KEY)
     return data ? btoa(String.fromCharCode(...data)) : null
   }
 }
@@ -256,24 +269,37 @@ export async function exportDatabase(): Promise<string | null> {
 /**
  * Import database from backup
  * Works on both native and web platforms
+ * @param data JSON string for native platforms, base64 encoded data for web
  */
 export async function importDatabase(data: string): Promise<void> {
-  if (isNativePlatform() && sqliteConnection) {
+  if (!data || typeof data !== 'string') {
+    throw new Error('Invalid import data: data must be a non-empty string.')
+  }
+
+  if (isNativePlatform()) {
+    if (!sqliteConnection) {
+      // Create a new connection if not available
+      sqliteConnection = new SQLiteConnection(CapacitorSQLite)
+    }
     // For native platforms, import using SQLite JSON import
+    // The data should be a JSON string
     await sqliteConnection.importFromJson(data)
   } else {
     // For web, restore from base64 encoded Uint8Array
-    const { createInstance, INDEXEDDB } = await import('localforage')
-    const storage = createInstance({
-      driver: INDEXEDDB,
-      name: 'track-expenses-database'
-    })
-    const binaryString = atob(data)
-    const bytes = new Uint8Array(binaryString.length)
-    for (let i = 0; i < binaryString.length; i++) {
-      bytes[i] = binaryString.charCodeAt(i)
+    try {
+      const binaryString = atob(data)
+      const bytes = new Uint8Array(binaryString.length)
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i)
+      }
+      const storage = await getWebStorage()
+      await storage.setItem(WEB_STORAGE_KEY, bytes)
+    } catch (error) {
+      if (error instanceof DOMException) {
+        throw new Error('Invalid import data: data is not a valid base64 encoded string.')
+      }
+      throw error
     }
-    await storage.setItem('__TRACK_EXPENSES_DB__', bytes)
   }
   
   // Reset all services and reinitialize
