@@ -13,7 +13,7 @@ const { mediumImpact } = useHaptics()
 const isDark = computed(() => appConfig.isDark)
 const primaryColor = computed(() => appConfig.primaryColor)
 
-// Show FAB only on home/details tab
+// Show FAB only on the Details tab (home page)
 const showFab = computed(() => route.path === '/')
 
 function goToAddExpense() {
@@ -35,7 +35,7 @@ function goToAddExpense() {
       <slot />
     </div>
     
-    <!-- FAB for adding expense - only visible on home tab -->
+    <!-- FAB for adding expense - only visible on Details tab -->
     <v-fab
       icon="mdi-plus"
       :color="primaryColor"
