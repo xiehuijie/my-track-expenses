@@ -10,7 +10,6 @@ const router = useRouter()
 const appConfig = useAppConfigStore()
 const { mediumImpact } = useHaptics()
 
-const isDark = computed(() => appConfig.isDark)
 const primaryColor = computed(() => appConfig.primaryColor)
 
 // Show FAB only on the Details tab (home page)
@@ -23,10 +22,7 @@ function goToAddExpense() {
 </script>
 
 <template>
-  <div 
-    class="main-layout"
-    :class="{ 'dark': isDark }"
-  >
+  <div class="main-layout">
     <!-- Status bar area -->
     <div class="status-bar" />
     
@@ -59,11 +55,7 @@ function goToAddExpense() {
   flex-direction: column;
   width: 100%;
   height: 100%;
-  background-color: #f5f5f5;
-}
-
-.main-layout.dark {
-  background-color: #121212;
+  background-color: var(--theme-background);
 }
 
 .status-bar {

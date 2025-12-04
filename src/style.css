@@ -1,5 +1,60 @@
 :root {
-  /* Theme color variables - will be updated dynamically */
+  /* Theme color variables - will be updated dynamically by the theme system */
+  /* Primary color palette */
+  --theme-primary: #2196F3;
+  --theme-primary-lighten-5: #E3F2FD;
+  --theme-primary-lighten-4: #BBDEFB;
+  --theme-primary-lighten-3: #90CAF9;
+  --theme-primary-lighten-2: #64B5F6;
+  --theme-primary-lighten-1: #42A5F5;
+  --theme-primary-darken-1: #1E88E5;
+  --theme-primary-darken-2: #1976D2;
+  --theme-primary-darken-3: #1565C0;
+  --theme-primary-darken-4: #0D47A1;
+  --theme-primary-accent-1: #82B1FF;
+  --theme-primary-accent-2: #448AFF;
+  --theme-primary-accent-3: #2979FF;
+  --theme-primary-accent-4: #2962FF;
+
+  /* Secondary color */
+  --theme-secondary: #607D8B;
+  --theme-secondary-darken-2: #455A64;
+
+  /* Semantic colors */
+  --theme-success: #4CAF50;
+  --theme-warning: #FF9800;
+  --theme-error: #F44336;
+  --theme-info: #2196F3;
+
+  /* Surface colors */
+  --theme-background: #FAFAFA;
+  --theme-surface: #FFFFFF;
+  --theme-surface-variant: #F5F5F5;
+  --theme-card: #FFFFFF;
+  --theme-dialog: #FFFFFF;
+  --theme-overlay: rgba(0, 0, 0, 0.5);
+
+  /* Text colors */
+  --theme-text-primary: rgba(0, 0, 0, 0.87);
+  --theme-text-secondary: rgba(0, 0, 0, 0.6);
+  --theme-text-disabled: rgba(0, 0, 0, 0.38);
+  --theme-text-hint: rgba(0, 0, 0, 0.38);
+  --theme-text-on-primary: #FFFFFF;
+  --theme-text-on-secondary: #FFFFFF;
+  --theme-text-on-background: rgba(0, 0, 0, 0.87);
+  --theme-text-on-surface: rgba(0, 0, 0, 0.87);
+  --theme-text-on-error: #FFFFFF;
+
+  /* Border colors */
+  --theme-border: rgba(0, 0, 0, 0.12);
+  --theme-border-light: rgba(0, 0, 0, 0.08);
+  --theme-border-dark: rgba(0, 0, 0, 0.2);
+
+  /* Status bar */
+  --theme-status-bar-bg: #1976D2;
+  --theme-status-bar-style: light;
+
+  /* Legacy variables for compatibility */
   --theme-color-primary: #2196F3;
   --theme-color-primary-light: #1976D2;
   --theme-color-primary-dark: #90CAF9;
@@ -19,8 +74,8 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--theme-text-primary);
+  background-color: var(--theme-background);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -67,30 +122,10 @@ html, body {
   color-scheme: dark;
 }
 
-/* Light mode styles */
-@media (prefers-color-scheme: light) {
-  :root:not(.dark) {
-    color: #213547;
-    background-color: #ffffff;
-  }
-}
-
-/* Force dark mode when class is present */
-.dark :root,
-:root.dark {
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #121212;
-}
-
-/* Tab bar styles */
+/* Tab bar styles - using theme variables */
 .tab-bar {
-  background-color: #ffffff;
-  border-top: 1px solid rgba(0, 0, 0, 0.12);
-}
-
-.dark .tab-bar {
-  background-color: #1e1e1e;
-  border-top-color: rgba(255, 255, 255, 0.12);
+  background-color: var(--theme-surface);
+  border-top: 1px solid var(--theme-border);
 }
 
 /* Status bar area */
@@ -132,4 +167,5 @@ html, body {
   background-color: inherit;
   border-radius: 50% 50% 0 0;
 }
+
 
