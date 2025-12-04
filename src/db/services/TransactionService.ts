@@ -182,21 +182,29 @@ export class TransactionService extends BaseCRUDService<Transaction, string> {
   }
 
   /**
-   * Toggle marked status
+   * Toggle marked status using atomic update
    */
   async toggleMarked(id: string): Promise<Transaction | null> {
-    const transaction = await this.findById(id)
-    if (!transaction) return null
-    return this.update(id, { isMarked: !transaction.isMarked })
+    await this.repository
+      .createQueryBuilder()
+      .update()
+      .set({ isMarked: () => 'NOT isMarked' })
+      .where('id = :id', { id })
+      .execute()
+    return this.findById(id)
   }
 
   /**
-   * Toggle needs review status
+   * Toggle needs review status using atomic update
    */
   async toggleNeedsReview(id: string): Promise<Transaction | null> {
-    const transaction = await this.findById(id)
-    if (!transaction) return null
-    return this.update(id, { needsReview: !transaction.needsReview })
+    await this.repository
+      .createQueryBuilder()
+      .update()
+      .set({ needsReview: () => 'NOT needsReview' })
+      .where('id = :id', { id })
+      .execute()
+    return this.findById(id)
   }
 
   /**

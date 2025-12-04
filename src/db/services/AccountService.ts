@@ -76,12 +76,16 @@ export class AccountService extends BaseCRUDService<Account, string> {
 
   /**
    * Adjust account balance by amount (positive or negative)
+   * Uses atomic update to avoid race conditions
    */
   async adjustBalance(id: string, adjustment: number): Promise<Account | null> {
-    const account = await this.findById(id)
-    if (!account) return null
-    const newBalance = account.currentBalance + adjustment
-    return this.update(id, { currentBalance: newBalance })
+    await this.repository
+      .createQueryBuilder()
+      .update()
+      .set({ currentBalance: () => `currentBalance + ${adjustment}` })
+      .where('id = :id', { id })
+      .execute()
+    return this.findById(id)
   }
 
   /**
