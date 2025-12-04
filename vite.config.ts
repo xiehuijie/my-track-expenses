@@ -19,5 +19,17 @@ export default defineConfig({
   },
   optimizeDeps: {
     exclude: ['sql.js']
+  },
+  server: {
+    // Enable network access for remote debugging from other devices
+    host: true,
+    // Default port (can be overridden via CLI or env)
+    port: 5173,
+    // Enable CORS for remote connections
+    cors: true
+  },
+  // Enable source maps in development for better debugging experience
+  css: {
+    devSourcemap: true
   }
 })
