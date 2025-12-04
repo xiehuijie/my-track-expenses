@@ -5,6 +5,11 @@ import { getStatusBarStyle, isLightBackground } from '@/themes';
 /**
  * Composable for managing the status bar appearance
  * Handles adaptive status bar style based on background color
+ * 
+ * Note on Capacitor Status Bar Style naming:
+ * - Style.Dark = light content (white text/icons) for use on dark backgrounds
+ * - Style.Light = dark content (black text/icons) for use on light backgrounds
+ * This is counter-intuitive but follows the "content color" naming convention
  */
 export function useStatusBar() {
   const isNativePlatform = Capacitor.isNativePlatform();
@@ -13,12 +18,17 @@ export function useStatusBar() {
    * Set the status bar style based on background color
    * Uses light content (white text) for dark backgrounds
    * Uses dark content (black text) for light backgrounds
+   * 
+   * Note: Theme 'light' style means light content (white icons), which maps to Style.Dark
+   * This is because Capacitor's Style enum refers to content color, not background color
    */
   async function setStatusBarStyle(backgroundColor: string) {
     if (!isNativePlatform) return;
     
     try {
       const style = getStatusBarStyle(backgroundColor);
+      // 'light' theme style = light content (white icons) = Capacitor Style.Dark
+      // 'dark' theme style = dark content (black icons) = Capacitor Style.Light
       await StatusBar.setStyle({
         style: style === 'light' ? Style.Dark : Style.Light
       });
@@ -28,10 +38,12 @@ export function useStatusBar() {
   }
 
   /**
-   * Set status bar to light style (white text/icons)
+   * Set status bar to show light content (white text/icons)
    * Use for dark backgrounds
+   * 
+   * Note: Uses Capacitor's Style.Dark which shows light/white content
    */
-  async function setLightStyle() {
+  async function setLightContent() {
     if (!isNativePlatform) return;
     
     try {
@@ -42,10 +54,12 @@ export function useStatusBar() {
   }
 
   /**
-   * Set status bar to dark style (black text/icons)
+   * Set status bar to show dark content (black text/icons)
    * Use for light backgrounds
+   * 
+   * Note: Uses Capacitor's Style.Light which shows dark/black content
    */
-  async function setDarkStyle() {
+  async function setDarkContent() {
     if (!isNativePlatform) return;
     
     try {
@@ -78,16 +92,16 @@ export function useStatusBar() {
     try {
       if (isDark) {
         // Dark mode: use the dark background color with light status bar icons
-        await setLightStyle();
+        await setLightContent();
         await setBackgroundColor('#121212');
       } else {
         // Light mode: use the primary color as background
         // Determine if the primary color is light or dark
         const shouldUseDarkText = isLightBackground(primaryColor);
         if (shouldUseDarkText) {
-          await setDarkStyle();
+          await setDarkContent();
         } else {
-          await setLightStyle();
+          await setLightContent();
         }
         await setBackgroundColor(primaryColor);
       }
@@ -124,8 +138,8 @@ export function useStatusBar() {
 
   return {
     setStatusBarStyle,
-    setLightStyle,
-    setDarkStyle,
+    setLightContent,
+    setDarkContent,
     setBackgroundColor,
     updateForTheme,
     show,

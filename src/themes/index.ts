@@ -125,9 +125,9 @@ export function getRelativeLuminance(hex: string): number {
   const cleanHex = hex.replace('#', '');
   
   // Parse RGB values
-  const r = parseInt(cleanHex.substr(0, 2), 16) / 255;
-  const g = parseInt(cleanHex.substr(2, 2), 16) / 255;
-  const b = parseInt(cleanHex.substr(4, 2), 16) / 255;
+  const r = parseInt(cleanHex.substring(0, 2), 16) / 255;
+  const g = parseInt(cleanHex.substring(2, 4), 16) / 255;
+  const b = parseInt(cleanHex.substring(4, 6), 16) / 255;
   
   // Apply gamma correction
   const R = r <= 0.03928 ? r / 12.92 : Math.pow((r + 0.055) / 1.055, 2.4);
