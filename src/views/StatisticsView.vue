@@ -21,7 +21,7 @@ const { t } = useI18n()
             type="info"
             variant="tonal"
           >
-            统计功能即将上线
+            {{ t('common.comingSoon') }}
           </v-alert>
         </v-card-text>
       </v-card>

@@ -59,6 +59,7 @@ export async function initializeDatabase(): Promise<void> {
       // Initialize services
       expenseService = new ExpenseService(dataSource)
     } catch (error) {
+      console.error('Database initialization failed:', error)
       initPromise = null
       throw error
     }
