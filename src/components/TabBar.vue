@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { computed } from 'vue'
+import { computed, watch, ref } from 'vue'
 import { useAppConfigStore } from '@/stores/appConfig'
+import { useHaptics } from '@/composables/useHaptics'
 
 const router = useRouter()
 const route = useRoute()
 const { t } = useI18n()
 const appConfig = useAppConfigStore()
+const { lightImpact } = useHaptics()
 
 interface TabItem {
   key: string
@@ -23,199 +25,59 @@ const tabs: TabItem[] = [
   { key: 'me', path: '/me', icon: 'mdi-account', labelKey: 'tabs.me' }
 ]
 
-const leftTabs = computed(() => tabs.slice(0, 2))
-const rightTabs = computed(() => tabs.slice(2))
-
-const currentTab = computed(() => {
-  return tabs.find(tab => tab.path === route.path)?.key || 'details'
-})
-
-function navigateTo(path: string) {
-  router.push(path)
+// Map route path to tab index for v-bottom-navigation
+const pathToIndex: Record<string, number> = {
+  '/': 0,
+  '/statistics': 1,
+  '/assets': 2,
+  '/me': 3
 }
 
-function goToAddExpense() {
-  router.push('/add')
+const currentTabIndex = computed(() => {
+  return pathToIndex[route.path] ?? 0
+})
+
+// Local state for v-model binding
+const selectedTab = ref(currentTabIndex.value)
+
+// Sync selectedTab when route changes externally
+watch(currentTabIndex, (newIndex) => {
+  selectedTab.value = newIndex
+})
+
+function onTabChange(index: number) {
+  const tab = tabs[index]
+  if (tab && tab.path !== route.path) {
+    lightImpact()
+    router.push(tab.path)
+  }
 }
 
 const primaryColor = computed(() => appConfig.primaryColor)
-const isDark = computed(() => appConfig.isDark)
 </script>
 
 <template>
-  <div 
-    class="tab-bar-container"
-    :class="{ 'dark': isDark }"
+  <v-bottom-navigation
+    v-model="selectedTab"
+    mode="shift"
+    grow
+    :color="primaryColor"
+    @update:model-value="onTabChange"
   >
-    <!-- Arc background for add button -->
-    <div class="arc-background" />
-    
-    <!-- Add button in center -->
-    <button
-      class="add-button"
-      :style="{ backgroundColor: primaryColor }"
-      @click="goToAddExpense"
+    <v-btn
+      v-for="tab in tabs"
+      :key="tab.key"
+      :value="pathToIndex[tab.path]"
     >
-      <v-icon 
-        icon="mdi-plus" 
-        size="28"
-        :color="isDark ? '#1e1e1e' : '#ffffff'"
-      />
-    </button>
-    
-    <!-- Tab bar -->
-    <div class="tab-bar">
-      <!-- Left tabs -->
-      <div class="tab-group left-tabs">
-        <button
-          v-for="tab in leftTabs"
-          :key="tab.key"
-          class="tab-item"
-          :class="{ 'active': currentTab === tab.key }"
-          @click="navigateTo(tab.path)"
-        >
-          <v-icon 
-            :icon="tab.icon" 
-            :color="currentTab === tab.key ? primaryColor : (isDark ? '#9e9e9e' : '#757575')"
-            size="24"
-          />
-          <span 
-            class="tab-label"
-            :style="{ color: currentTab === tab.key ? primaryColor : (isDark ? '#9e9e9e' : '#757575') }"
-          >
-            {{ t(tab.labelKey) }}
-          </span>
-        </button>
-      </div>
-
-      <!-- Spacer for add button -->
-      <div class="add-button-spacer" />
-
-      <!-- Right tabs -->
-      <div class="tab-group right-tabs">
-        <button
-          v-for="tab in rightTabs"
-          :key="tab.key"
-          class="tab-item"
-          :class="{ 'active': currentTab === tab.key }"
-          @click="navigateTo(tab.path)"
-        >
-          <v-icon 
-            :icon="tab.icon" 
-            :color="currentTab === tab.key ? primaryColor : (isDark ? '#9e9e9e' : '#757575')"
-            size="24"
-          />
-          <span 
-            class="tab-label"
-            :style="{ color: currentTab === tab.key ? primaryColor : (isDark ? '#9e9e9e' : '#757575') }"
-          >
-            {{ t(tab.labelKey) }}
-          </span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Bottom safe area -->
-    <div class="bottom-safe-area" />
-  </div>
+      <v-icon :icon="tab.icon" />
+      <span>{{ t(tab.labelKey) }}</span>
+    </v-btn>
+  </v-bottom-navigation>
 </template>
 
 <style scoped>
-.tab-bar-container {
-  position: relative;
-  width: 100%;
-  background-color: #ffffff;
-}
-
-.tab-bar-container.dark {
-  background-color: #1e1e1e;
-}
-
-.arc-background {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 76px;
-  height: 38px;
-  background-color: inherit;
-  border-radius: 50px 50px 0 0;
-  z-index: 1;
-}
-
-.add-button {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.add-button:active {
-  transform: translate(-50%, -50%) scale(0.95);
-}
-
-.tab-bar {
-  display: flex;
-  align-items: center;
-  height: 56px;
-  border-top: 1px solid rgba(0, 0, 0, 0.12);
-}
-
-.tab-bar-container.dark .tab-bar {
-  border-top-color: rgba(255, 255, 255, 0.12);
-}
-
-.tab-group {
-  display: flex;
-  flex: 1;
-}
-
-.left-tabs {
-  justify-content: flex-end;
-  padding-right: 16px;
-}
-
-.right-tabs {
-  justify-content: flex-start;
-  padding-left: 16px;
-}
-
-.add-button-spacer {
-  width: 76px;
-  flex-shrink: 0;
-}
-
-.tab-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4px 16px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  min-width: 64px;
-}
-
-.tab-label {
-  font-size: 12px;
-  margin-top: 2px;
-  font-weight: 500;
-}
-
-.bottom-safe-area {
-  height: env(safe-area-inset-bottom, 0px);
-  background-color: inherit;
+/* Add bottom safe area padding */
+:deep(.v-bottom-navigation) {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 </style>

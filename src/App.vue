@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { RouterView, useRoute } from 'vue-router'
-import { computed } from 'vue'
+import { RouterView, useRoute, useRouter } from 'vue-router'
+import { computed, onMounted, onUnmounted } from 'vue'
 import MainLayout from '@/layouts/MainLayout.vue'
 import { useAppConfigStore } from '@/stores/appConfig'
+import { App } from '@capacitor/app'
+import { Capacitor } from '@capacitor/core'
 
 const route = useRoute()
+const router = useRouter()
 const appConfig = useAppConfigStore()
 
 // Pages that use the main layout with tab bar
@@ -15,14 +18,69 @@ const useMainLayout = computed(() => {
 })
 
 const isDark = computed(() => appConfig.isDark)
+
+// Back button handling
+let backButtonListener: (() => Promise<void>) | null = null
+
+const handleBackButton = async () => {
+  const currentPath = route.path
+  
+  // If we're on a main tab, exit the app
+  if (mainLayoutRoutes.includes(currentPath)) {
+    await App.exitApp()
+  } else {
+    // Otherwise, go back in history
+    router.back()
+  }
+}
+
+onMounted(async () => {
+  if (!Capacitor.isNativePlatform()) return
+  
+  const listener = await App.addListener('backButton', async () => {
+    await handleBackButton()
+  })
+  
+  backButtonListener = listener.remove
+})
+
+onUnmounted(async () => {
+  if (backButtonListener) {
+    await backButtonListener()
+    backButtonListener = null
+  }
+})
 </script>
 
 <template>
   <v-app :theme="isDark ? 'dark' : 'light'">
     <MainLayout v-if="useMainLayout">
-      <RouterView />
+      <RouterView v-slot="{ Component }">
+        <transition 
+          name="fade-slide" 
+          mode="out-in"
+        >
+          <component
+            :is="Component"
+            :key="route.path"
+          />
+        </transition>
+      </RouterView>
     </MainLayout>
-    <RouterView v-else />
+    <RouterView
+      v-else
+      v-slot="{ Component }"
+    >
+      <transition 
+        name="slide-up" 
+        mode="out-in"
+      >
+        <component
+          :is="Component"
+          :key="route.path"
+        />
+      </transition>
+    </RouterView>
   </v-app>
 </template>
 
@@ -40,5 +98,37 @@ const isDark = computed(() => appConfig.isDark)
   flex-direction: column;
   flex: 1;
   min-height: 100%;
+}
+
+/* Fade slide transition for tab switching */
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.fade-slide-enter-from {
+  opacity: 0;
+  transform: translateX(10px);
+}
+
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+/* Slide up transition for pages (like add expense) */
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide-up-enter-from {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.slide-up-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
 }
 </style>
