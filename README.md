@@ -125,6 +125,9 @@ npm run build
 my-track-expenses/
 ├── src/                    # Vue application source code
 │   ├── components/         # Reusable Vue components
+│   ├── composables/        # Vue composables (useStorage, useHaptics, etc.)
+│   ├── db/                 # Database entities and services
+│   ├── storage/            # Object storage for media files
 │   ├── views/              # Page components
 │   ├── router/             # Vue Router configuration
 │   ├── stores/             # Pinia stores
@@ -177,6 +180,111 @@ This project uses GitHub Actions for continuous integration:
 - **Android Build**: Builds debug APK after successful lint and test
   - Requires Java 21
   - Uploads APK as build artifact
+
+## Object Storage API
+
+The app includes an object storage system for storing media files (images, videos, audio) in the app's private storage area. This is designed for transaction attachments like receipts, invoices, and voice memos.
+
+### Features
+
+- **Cross-platform**: Uses Capacitor Filesystem on native platforms (Android/iOS) and IndexedDB on web
+- **Private storage**: Files are stored in the app's private area, not accessible by other apps
+- **Media support**: Automatic MIME type detection for images, videos, and audio files
+- **Metadata tracking**: Each file includes metadata (ID, filename, path, size, creation date, custom fields)
+
+### Service API
+
+```typescript
+import { 
+  initializeStorage, 
+  storeFile, 
+  retrieveFile, 
+  deleteFile, 
+  listFiles,
+  MediaType 
+} from '@/storage'
+
+// Initialize storage (call once at app startup)
+await initializeStorage()
+
+// Store a file (base64 encoded data)
+const result = await storeFile(base64Data, 'image/jpeg', {
+  directory: 'receipts',
+  filename: 'receipt-001',
+  metadata: { transactionId: '123' }
+})
+
+if (result.success) {
+  console.log('File stored with ID:', result.file.id)
+}
+
+// Retrieve a file
+const file = await retrieveFile(fileId, true) // true = create object URL
+if (file.success) {
+  // Use in img element
+  imageElement.src = file.objectUrl
+}
+
+// List files
+const files = await listFiles({
+  directory: 'receipts',
+  mediaType: MediaType.IMAGE
+})
+
+// Delete a file
+await deleteFile(fileId)
+```
+
+### Vue Composable
+
+For Vue components, use the `useStorage` composable:
+
+```vue
+<script setup lang="ts">
+import { useStorage } from '@/composables/useStorage'
+
+const { 
+  isReady, 
+  isLoading, 
+  error, 
+  saveFile, 
+  loadFile,
+  getUrl,
+  removeFile,
+  getFiles,
+  formatSize
+} from useStorage()
+
+// Save a File object (e.g., from file input)
+async function handleFileUpload(event: Event) {
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (file) {
+    const result = await saveFile(file, { 
+      directory: 'receipts',
+      metadata: { transactionId: '123' }
+    })
+    if (result) {
+      console.log('Saved:', result.id)
+    }
+  }
+}
+
+// Load and display a file
+async function displayImage(fileId: string) {
+  const url = await getUrl(fileId)
+  if (url) {
+    imageUrl.value = url
+    // URL is automatically cleaned up when component unmounts
+  }
+}
+</script>
+```
+
+### Web Access
+
+On web platforms, files are stored in IndexedDB and can be accessed via object URLs. The composable automatically manages URL lifecycle (creation and revocation).
+
+For native platforms, files are stored in the app's data directory and accessed via native file URIs.
 
 ## License
 

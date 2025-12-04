@@ -49,6 +49,7 @@
     "@capacitor/app": "^7.1.0",
     "@capacitor/cli": "^7.4.4",
     "@capacitor/core": "^7.4.4",
+    "@capacitor/filesystem": "^7.1.5",
     "@capacitor/haptics": "^7.0.2",
     "@capacitor/status-bar": "^7.0.3",
     "@mdi/font": "^7.4.47",
