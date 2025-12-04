@@ -260,8 +260,9 @@ export async function storeFile(
       : `${fileId}${extension}`
     const path = getFilePath(options.directory, filename)
     
-    // Calculate file size from base64 data
-    const size = Math.round((data.length * 3) / 4)
+    // Calculate file size from base64 data, accounting for padding
+    const paddingLength = (data.match(/=+$/)?.[0]?.length ?? 0)
+    const size = Math.round((data.length * 3) / 4) - paddingLength
     
     // Store the file
     if (isNativePlatform()) {
@@ -488,7 +489,8 @@ export async function listFiles(options?: {
     }
     
     if (options?.metadataFilter) {
-      files = files.filter(f => options.metadataFilter!(f.metadata))
+      const filterFn = options.metadataFilter
+      files = files.filter(f => filterFn(f.metadata))
     }
     
     // Sort by creation date, newest first

@@ -124,9 +124,11 @@ export function useStorage() {
     
     try {
       const base64 = await fileToBase64(file)
+      // Extract filename without extension, fallback to undefined if no valid name
+      const extractedName = file.name ? file.name.replace(/\.[^.]+$/, '') : undefined
       const result = await storeFile(base64, file.type, {
         ...options,
-        filename: options?.filename || file.name.replace(/\.[^.]+$/, '')
+        filename: options?.filename || extractedName || undefined
       })
       
       if (result.success) {
