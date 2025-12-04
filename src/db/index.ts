@@ -3,8 +3,16 @@ import wasm from 'sql.js/dist/sql-wasm.wasm?url'
 import 'reflect-metadata'
 import { DataSource } from 'typeorm/browser'
 import { createInstance, INDEXEDDB } from 'localforage'
-import { Expense } from './entities'
-import { ExpenseService } from './services'
+import { Expense, User, Ledger, Account, Category, Tag, Transaction } from './entities'
+import { 
+  ExpenseService, 
+  UserService, 
+  LedgerService, 
+  AccountService, 
+  CategoryService, 
+  TagService, 
+  TransactionService 
+} from './services'
 
 const STORAGE_KEY = '__TRACK_EXPENSES_DB__'
 
@@ -17,6 +25,12 @@ const storage = createInstance({
 // Database initialization state
 let dataSource: DataSource | null = null
 let expenseService: ExpenseService | null = null
+let userService: UserService | null = null
+let ledgerService: LedgerService | null = null
+let accountService: AccountService | null = null
+let categoryService: CategoryService | null = null
+let tagService: TagService | null = null
+let transactionService: TransactionService | null = null
 let initPromise: Promise<void> | null = null
 
 /**
@@ -50,7 +64,7 @@ export async function initializeDatabase(): Promise<void> {
         },
         database,
         logging: import.meta.env.DEV ? ['query', 'schema', 'info', 'log'] : false,
-        entities: [Expense],
+        entities: [Expense, User, Ledger, Account, Category, Tag, Transaction],
         synchronize: true
       })
 
@@ -58,6 +72,12 @@ export async function initializeDatabase(): Promise<void> {
 
       // Initialize services
       expenseService = new ExpenseService(dataSource)
+      userService = new UserService(dataSource)
+      ledgerService = new LedgerService(dataSource)
+      accountService = new AccountService(dataSource)
+      categoryService = new CategoryService(dataSource)
+      tagService = new TagService(dataSource)
+      transactionService = new TransactionService(dataSource)
     } catch (error) {
       console.error('Database initialization failed:', error)
       initPromise = null
@@ -76,6 +96,66 @@ export function getExpenseService(): ExpenseService {
     throw new Error('Database not initialized. Call initializeDatabase() first.')
   }
   return expenseService
+}
+
+/**
+ * Get the user service instance
+ */
+export function getUserService(): UserService {
+  if (!userService) {
+    throw new Error('Database not initialized. Call initializeDatabase() first.')
+  }
+  return userService
+}
+
+/**
+ * Get the ledger service instance
+ */
+export function getLedgerService(): LedgerService {
+  if (!ledgerService) {
+    throw new Error('Database not initialized. Call initializeDatabase() first.')
+  }
+  return ledgerService
+}
+
+/**
+ * Get the account service instance
+ */
+export function getAccountService(): AccountService {
+  if (!accountService) {
+    throw new Error('Database not initialized. Call initializeDatabase() first.')
+  }
+  return accountService
+}
+
+/**
+ * Get the category service instance
+ */
+export function getCategoryService(): CategoryService {
+  if (!categoryService) {
+    throw new Error('Database not initialized. Call initializeDatabase() first.')
+  }
+  return categoryService
+}
+
+/**
+ * Get the tag service instance
+ */
+export function getTagService(): TagService {
+  if (!tagService) {
+    throw new Error('Database not initialized. Call initializeDatabase() first.')
+  }
+  return tagService
+}
+
+/**
+ * Get the transaction service instance
+ */
+export function getTransactionService(): TransactionService {
+  if (!transactionService) {
+    throw new Error('Database not initialized. Call initializeDatabase() first.')
+  }
+  return transactionService
 }
 
 /**
@@ -110,6 +190,15 @@ export async function importDatabase(data: Uint8Array): Promise<void> {
   // Reinitialize database with new data
   dataSource = null
   expenseService = null
+  userService = null
+  ledgerService = null
+  accountService = null
+  categoryService = null
+  tagService = null
+  transactionService = null
   initPromise = null
   await initializeDatabase()
 }
+
+// Re-export currency utilities
+export * from './currency'
