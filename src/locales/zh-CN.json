@@ -63,5 +63,54 @@
         "error": "错误",
         "success": "成功",
         "comingSoon": "功能即将上线"
+    },
+    "me": {
+        "groups": {
+            "accounting": "记账相关",
+            "advanced": "高级操作",
+            "other": "其他"
+        },
+        "books": {
+            "title": "账本管理",
+            "subtitle": "管理您的账本"
+        },
+        "categories": {
+            "title": "分类设置",
+            "subtitle": "配置支出分类"
+        },
+        "expenseConfig": {
+            "title": "记账配置",
+            "subtitle": "默认记账配置项"
+        },
+        "tags": {
+            "title": "标签管理",
+            "subtitle": "管理支出标签"
+        },
+        "recycleBin": {
+            "title": "回收站",
+            "subtitle": "恢复已删除的项目"
+        },
+        "cloudSync": {
+            "title": "云同步",
+            "subtitle": "备份和同步数据"
+        },
+        "settings": {
+            "title": "设置",
+            "subtitle": "语言、主题等"
+        },
+        "devTools": {
+            "title": "开发者工具",
+            "subtitle": "调试和诊断"
+        },
+        "about": {
+            "title": "关于",
+            "subtitle": "应用信息",
+            "version": "版本",
+            "buildTime": "编译时间"
+        },
+        "license": {
+            "title": "开源协议",
+            "subtitle": "查看许可信息"
+        }
     }
 }

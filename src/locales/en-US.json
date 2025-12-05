@@ -63,5 +63,54 @@
         "error": "Error",
         "success": "Success",
         "comingSoon": "Coming soon"
+    },
+    "me": {
+        "groups": {
+            "accounting": "Accounting",
+            "advanced": "Advanced",
+            "other": "Other"
+        },
+        "books": {
+            "title": "Account Books",
+            "subtitle": "Manage your account books"
+        },
+        "categories": {
+            "title": "Categories",
+            "subtitle": "Configure expense categories"
+        },
+        "expenseConfig": {
+            "title": "Expense Settings",
+            "subtitle": "Default expense configurations"
+        },
+        "tags": {
+            "title": "Tags",
+            "subtitle": "Manage expense tags"
+        },
+        "recycleBin": {
+            "title": "Recycle Bin",
+            "subtitle": "Recover deleted items"
+        },
+        "cloudSync": {
+            "title": "Cloud Sync",
+            "subtitle": "Backup and sync data"
+        },
+        "settings": {
+            "title": "Settings",
+            "subtitle": "Language, theme and more"
+        },
+        "devTools": {
+            "title": "Developer Tools",
+            "subtitle": "Debug and diagnostics"
+        },
+        "about": {
+            "title": "About",
+            "subtitle": "App information",
+            "version": "Version",
+            "buildTime": "Build Time"
+        },
+        "license": {
+            "title": "Open Source License",
+            "subtitle": "View license information"
+        }
     }
 }
