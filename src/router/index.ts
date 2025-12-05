@@ -59,6 +59,11 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/me/SettingsView.vue'),
     },
     {
+        path: '/me/messages',
+        name: 'me-messages',
+        component: () => import('@/views/me/MessageCenterView.vue'),
+    },
+    {
         path: '/me/dev-tools',
         name: 'me-dev-tools',
         component: () => import('@/views/me/DevToolsView.vue'),

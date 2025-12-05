@@ -2,13 +2,23 @@
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useAppConfigStore } from '@/stores/appConfig';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 const { t } = useI18n();
 const router = useRouter();
 const appConfig = useAppConfigStore();
 
 const primaryColor = computed(() => appConfig.primaryColor);
+const isDark = computed(() => appConfig.isDark);
+
+// Scroll tracking for app bar visibility
+const scrollY = ref(0);
+const showAppBar = computed(() => scrollY.value > 100);
+
+function handleScroll(event: Event) {
+    const target = event.target as HTMLElement;
+    scrollY.value = target.scrollTop;
+}
 
 // Check if dev tools should be visible (only in development or debug mode)
 const showDevTools = computed(() => {
@@ -83,13 +93,6 @@ const menuGroups = computed<MenuGroup[]>(() => [
                 subtitleKey: 'me.cloudSync.subtitle',
                 route: '/me/cloud-sync',
             },
-            {
-                key: 'settings',
-                icon: 'mdi-cog-outline',
-                titleKey: 'me.settings.title',
-                subtitleKey: 'me.settings.subtitle',
-                route: '/me/settings',
-            },
             ...(showDevTools.value
                 ? [
                       {
@@ -128,29 +131,103 @@ const menuGroups = computed<MenuGroup[]>(() => [
 function navigateTo(route: string) {
     router.push(route);
 }
+
+function goToMessages() {
+    router.push('/me/messages');
+}
+
+function goToSettings() {
+    router.push('/me/settings');
+}
 </script>
 
 <template>
-    <div class="me-view">
+    <div
+        class="me-view"
+        @scroll="handleScroll"
+    >
+        <!-- Scroll-aware App Bar -->
+        <Transition name="app-bar-slide">
+            <v-app-bar
+                v-if="showAppBar"
+                :color="primaryColor"
+                class="scroll-app-bar"
+            >
+                <v-app-bar-title>{{ t('me.personalCenter') }}</v-app-bar-title>
+                <template #append>
+                    <v-btn
+                        icon="mdi-bell-outline"
+                        @click="goToMessages"
+                    />
+                    <v-btn
+                        icon="mdi-cog-outline"
+                        @click="goToSettings"
+                    />
+                </template>
+            </v-app-bar>
+        </Transition>
+
         <!-- Header with curved bottom -->
-        <div class="header-section" :style="{ backgroundColor: primaryColor }">
+        <div
+            class="header-section"
+            :style="{ backgroundColor: primaryColor }"
+        >
+            <!-- Top right action buttons -->
+            <div class="header-actions">
+                <v-btn
+                    icon="mdi-bell-outline"
+                    variant="text"
+                    color="white"
+                    size="small"
+                    @click="goToMessages"
+                />
+                <v-btn
+                    icon="mdi-cog-outline"
+                    variant="text"
+                    color="white"
+                    size="small"
+                    @click="goToSettings"
+                />
+            </div>
+
             <div class="header-content">
-                <v-avatar size="72" color="white">
-                    <v-icon icon="mdi-account" size="48" :color="primaryColor" />
+                <v-avatar
+                    size="72"
+                    color="white"
+                >
+                    <v-icon
+                        icon="mdi-account"
+                        size="48"
+                        :color="primaryColor"
+                    />
                 </v-avatar>
                 <h2 class="header-title">{{ t('tabs.me') }}</h2>
             </div>
+
+            <!-- Curved bottom with downward arc -->
             <div class="header-curve">
-                <svg viewBox="0 0 100 20" preserveAspectRatio="none">
-                    <path d="M0,0 L0,15 Q50,25 100,15 L100,0 Z" :fill="primaryColor" />
+                <svg
+                    viewBox="0 0 100 20"
+                    preserveAspectRatio="none"
+                >
+                    <path
+                        d="M0,0 L0,5 Q50,25 100,5 L100,0 Z"
+                        :fill="primaryColor"
+                    />
                 </svg>
             </div>
         </div>
 
-        <!-- Menu content area -->
-        <div class="content-section">
+        <!-- Menu content area with gray background for better contrast -->
+        <div
+            class="content-section"
+            :class="{ 'content-section--light': !isDark }"
+        >
             <v-list class="menu-list">
-                <template v-for="(group, groupIndex) in menuGroups" :key="group.key">
+                <template
+                    v-for="(group, groupIndex) in menuGroups"
+                    :key="group.key"
+                >
                     <v-list-subheader>{{ t(group.titleKey) }}</v-list-subheader>
                     <v-list-item
                         v-for="item in group.items"
@@ -161,10 +238,16 @@ function navigateTo(route: string) {
                         @click="navigateTo(item.route)"
                     >
                         <template #append>
-                            <v-icon icon="mdi-chevron-right" size="small" />
+                            <v-icon
+                                icon="mdi-chevron-right"
+                                size="small"
+                            />
                         </template>
                     </v-list-item>
-                    <v-divider v-if="groupIndex < menuGroups.length - 1" class="my-2" />
+                    <v-divider
+                        v-if="groupIndex < menuGroups.length - 1"
+                        class="my-2"
+                    />
                 </template>
             </v-list>
         </div>
@@ -179,10 +262,26 @@ function navigateTo(route: string) {
     background-color: var(--theme-background);
 }
 
+.scroll-app-bar {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
 .header-section {
     position: relative;
     padding-top: calc(env(safe-area-inset-top, 0px) + 24px);
     padding-bottom: 0;
+}
+
+.header-actions {
+    position: absolute;
+    top: calc(env(safe-area-inset-top, 0px) + 8px);
+    right: 8px;
+    display: flex;
+    gap: 4px;
 }
 
 .header-content {
@@ -214,13 +313,28 @@ function navigateTo(route: string) {
 }
 
 .content-section {
-    padding: 0 12px 24px;
+    padding: 0 16px 24px;
     margin-top: -8px;
+}
+
+.content-section--light {
+    background-color: #f5f5f5;
 }
 
 .menu-list {
     background-color: var(--theme-card);
     border-radius: 12px;
     overflow: hidden;
+}
+
+/* App bar slide transition */
+.app-bar-slide-enter-active,
+.app-bar-slide-leave-active {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.app-bar-slide-enter-from,
+.app-bar-slide-leave-to {
+    transform: translateY(-100%);
 }
 </style>

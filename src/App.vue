@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterView, useRoute, useRouter } from 'vue-router';
-import { computed, onMounted, onUnmounted } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import MainLayout from '@/layouts/MainLayout.vue';
 import { useAppConfigStore } from '@/stores/appConfig';
 import { App } from '@capacitor/app';
@@ -25,6 +25,35 @@ const vuetifyTheme = computed(() => {
     const mode = isDark.value ? 'dark' : 'light';
     return `${themeColor}-${mode}`;
 });
+
+// Track navigation direction for slide transitions
+const transitionName = ref('slide-right');
+const previousPath = ref(route.path);
+
+watch(
+    () => route.path,
+    (newPath, oldPath) => {
+        // Determine if we're going deeper (forward) or back (backward)
+        const isGoingToSubpage = !mainLayoutRoutes.includes(newPath) && mainLayoutRoutes.includes(oldPath);
+        const isGoingBackToMain = mainLayoutRoutes.includes(newPath) && !mainLayoutRoutes.includes(oldPath);
+
+        if (isGoingToSubpage) {
+            // Entering subpage: slide in from right
+            transitionName.value = 'slide-right';
+        } else if (isGoingBackToMain) {
+            // Going back to main: slide out to right
+            transitionName.value = 'slide-left';
+        } else if (!mainLayoutRoutes.includes(newPath) && !mainLayoutRoutes.includes(oldPath)) {
+            // Navigating between subpages
+            // Check depth by counting path segments
+            const newDepth = newPath.split('/').filter(Boolean).length;
+            const oldDepth = oldPath.split('/').filter(Boolean).length;
+            transitionName.value = newDepth >= oldDepth ? 'slide-right' : 'slide-left';
+        }
+
+        previousPath.value = newPath;
+    }
+);
 
 // Back button handling
 let backButtonListener: (() => Promise<void>) | null = null;
@@ -63,14 +92,29 @@ onUnmounted(async () => {
     <v-app :theme="vuetifyTheme">
         <MainLayout v-if="useMainLayout">
             <RouterView v-slot="{ Component }">
-                <transition name="fade-slide" mode="out-in">
-                    <component :is="Component" :key="route.path" />
+                <transition
+                    name="fade-slide"
+                    mode="out-in"
+                >
+                    <component
+                        :is="Component"
+                        :key="route.path"
+                    />
                 </transition>
             </RouterView>
         </MainLayout>
-        <RouterView v-else v-slot="{ Component }">
-            <transition name="slide-up" mode="out-in">
-                <component :is="Component" :key="route.path" />
+        <RouterView
+            v-else
+            v-slot="{ Component }"
+        >
+            <transition
+                :name="transitionName"
+                mode="out-in"
+            >
+                <component
+                    :is="Component"
+                    :key="route.path"
+                />
             </transition>
         </RouterView>
     </v-app>
@@ -110,21 +154,39 @@ onUnmounted(async () => {
     transform: translateX(-10px);
 }
 
-/* Slide up transition for pages (like add expense) */
-.slide-up-enter-active,
-.slide-up-leave-active {
+/* Slide right transition - entering subpage (slide in from right) */
+.slide-right-enter-active,
+.slide-right-leave-active {
     transition:
         opacity 0.3s ease,
         transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.slide-up-enter-from {
+.slide-right-enter-from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateX(100%);
 }
 
-.slide-up-leave-to {
+.slide-right-leave-to {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateX(-30%);
+}
+
+/* Slide left transition - going back (slide out to right) */
+.slide-left-enter-active,
+.slide-left-leave-active {
+    transition:
+        opacity 0.3s ease,
+        transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide-left-enter-from {
+    opacity: 0;
+    transform: translateX(-30%);
+}
+
+.slide-left-leave-to {
+    opacity: 0;
+    transform: translateX(100%);
 }
 </style>

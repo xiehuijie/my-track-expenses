@@ -64,7 +64,26 @@
         "success": "Success",
         "comingSoon": "Coming soon"
     },
+    "messages": {
+        "title": "Message Center",
+        "empty": "No messages",
+        "noMore": "No more messages",
+        "time": {
+            "today": "Today",
+            "yesterday": "Yesterday",
+            "daysAgo": "{days} days ago"
+        },
+        "mock": {
+            "systemTitle": "System Update v{version}",
+            "systemContent": "We've added new features and fixed some bugs. Update now for the best experience.",
+            "reminderTitle": "Recording Reminder",
+            "reminderContent": "You haven't recorded expenses for {days} days. Don't forget to track your spending!",
+            "promotionTitle": "New Feature Available",
+            "promotionContent": "Try our new statistics feature to better understand your spending habits."
+        }
+    },
     "me": {
+        "personalCenter": "Personal Center",
         "groups": {
             "accounting": "Accounting",
             "advanced": "Advanced",
