@@ -1,6 +1,3 @@
 {
-    "i18n-ally.localesPaths": [
-        "locales",
-        "D:/Documents/Project/my-track-expenses/src/locales"
-    ]
+    "i18n-ally.localesPaths": ["locales", "D:/Documents/Project/my-track-expenses/src/locales"]
 }

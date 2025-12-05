@@ -1,171 +1,170 @@
 :root {
-  /* Theme color variables - will be updated dynamically by the theme system */
-  /* Primary color palette */
-  --theme-primary: #2196F3;
-  --theme-primary-lighten-5: #E3F2FD;
-  --theme-primary-lighten-4: #BBDEFB;
-  --theme-primary-lighten-3: #90CAF9;
-  --theme-primary-lighten-2: #64B5F6;
-  --theme-primary-lighten-1: #42A5F5;
-  --theme-primary-darken-1: #1E88E5;
-  --theme-primary-darken-2: #1976D2;
-  --theme-primary-darken-3: #1565C0;
-  --theme-primary-darken-4: #0D47A1;
-  --theme-primary-accent-1: #82B1FF;
-  --theme-primary-accent-2: #448AFF;
-  --theme-primary-accent-3: #2979FF;
-  --theme-primary-accent-4: #2962FF;
+    /* Theme color variables - will be updated dynamically by the theme system */
+    /* Primary color palette */
+    --theme-primary: #2196f3;
+    --theme-primary-lighten-5: #e3f2fd;
+    --theme-primary-lighten-4: #bbdefb;
+    --theme-primary-lighten-3: #90caf9;
+    --theme-primary-lighten-2: #64b5f6;
+    --theme-primary-lighten-1: #42a5f5;
+    --theme-primary-darken-1: #1e88e5;
+    --theme-primary-darken-2: #1976d2;
+    --theme-primary-darken-3: #1565c0;
+    --theme-primary-darken-4: #0d47a1;
+    --theme-primary-accent-1: #82b1ff;
+    --theme-primary-accent-2: #448aff;
+    --theme-primary-accent-3: #2979ff;
+    --theme-primary-accent-4: #2962ff;
 
-  /* Secondary color */
-  --theme-secondary: #607D8B;
-  --theme-secondary-darken-2: #455A64;
+    /* Secondary color */
+    --theme-secondary: #607d8b;
+    --theme-secondary-darken-2: #455a64;
 
-  /* Semantic colors */
-  --theme-success: #4CAF50;
-  --theme-warning: #FF9800;
-  --theme-error: #F44336;
-  --theme-info: #2196F3;
+    /* Semantic colors */
+    --theme-success: #4caf50;
+    --theme-warning: #ff9800;
+    --theme-error: #f44336;
+    --theme-info: #2196f3;
 
-  /* Surface colors */
-  --theme-background: #FAFAFA;
-  --theme-surface: #FFFFFF;
-  --theme-surface-variant: #F5F5F5;
-  --theme-card: #FFFFFF;
-  --theme-dialog: #FFFFFF;
-  --theme-overlay: rgba(0, 0, 0, 0.5);
+    /* Surface colors */
+    --theme-background: #fafafa;
+    --theme-surface: #ffffff;
+    --theme-surface-variant: #f5f5f5;
+    --theme-card: #ffffff;
+    --theme-dialog: #ffffff;
+    --theme-overlay: rgba(0, 0, 0, 0.5);
 
-  /* Text colors */
-  --theme-text-primary: rgba(0, 0, 0, 0.87);
-  --theme-text-secondary: rgba(0, 0, 0, 0.6);
-  --theme-text-disabled: rgba(0, 0, 0, 0.38);
-  --theme-text-hint: rgba(0, 0, 0, 0.38);
-  --theme-text-on-primary: #FFFFFF;
-  --theme-text-on-secondary: #FFFFFF;
-  --theme-text-on-background: rgba(0, 0, 0, 0.87);
-  --theme-text-on-surface: rgba(0, 0, 0, 0.87);
-  --theme-text-on-error: #FFFFFF;
+    /* Text colors */
+    --theme-text-primary: rgba(0, 0, 0, 0.87);
+    --theme-text-secondary: rgba(0, 0, 0, 0.6);
+    --theme-text-disabled: rgba(0, 0, 0, 0.38);
+    --theme-text-hint: rgba(0, 0, 0, 0.38);
+    --theme-text-on-primary: #ffffff;
+    --theme-text-on-secondary: #ffffff;
+    --theme-text-on-background: rgba(0, 0, 0, 0.87);
+    --theme-text-on-surface: rgba(0, 0, 0, 0.87);
+    --theme-text-on-error: #ffffff;
 
-  /* Border colors */
-  --theme-border: rgba(0, 0, 0, 0.12);
-  --theme-border-light: rgba(0, 0, 0, 0.08);
-  --theme-border-dark: rgba(0, 0, 0, 0.2);
+    /* Border colors */
+    --theme-border: rgba(0, 0, 0, 0.12);
+    --theme-border-light: rgba(0, 0, 0, 0.08);
+    --theme-border-dark: rgba(0, 0, 0, 0.2);
 
-  /* Status bar */
-  --theme-status-bar-bg: #1976D2;
-  --theme-status-bar-style: light;
+    /* Status bar */
+    --theme-status-bar-bg: #1976d2;
+    --theme-status-bar-style: light;
 
-  /* Legacy variables for compatibility */
-  --theme-color-primary: #2196F3;
-  --theme-color-primary-light: #1976D2;
-  --theme-color-primary-dark: #90CAF9;
-  
-  /* Safe area variables */
-  --safe-area-top: env(safe-area-inset-top, 0px);
-  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-area-left: env(safe-area-inset-left, 0px);
-  --safe-area-right: env(safe-area-inset-right, 0px);
-  
-  /* Tab bar height */
-  --tab-bar-height: 56px;
-  --add-button-size: 56px;
-  
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+    /* Legacy variables for compatibility */
+    --theme-color-primary: #2196f3;
+    --theme-color-primary-light: #1976d2;
+    --theme-color-primary-dark: #90caf9;
 
-  color-scheme: light dark;
-  color: var(--theme-text-primary);
-  background-color: var(--theme-background);
+    /* Safe area variables */
+    --safe-area-top: env(safe-area-inset-top, 0px);
+    --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-area-left: env(safe-area-inset-left, 0px);
+    --safe-area-right: env(safe-area-inset-right, 0px);
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    /* Tab bar height */
+    --tab-bar-height: 56px;
+    --add-button-size: 56px;
+
+    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+
+    color-scheme: light dark;
+    color: var(--theme-text-primary);
+    background-color: var(--theme-background);
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* Prevent scroll and zoom */
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  touch-action: pan-x pan-y;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  user-select: none;
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    touch-action: pan-x pan-y;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 /* Prevent page zoom on iOS */
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
-  html {
-    -webkit-text-size-adjust: 100%;
-  }
+    html {
+        -webkit-text-size-adjust: 100%;
+    }
 }
 
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 #app {
-  width: 100vw;
-  height: 100vh;
-  max-width: 100vw;
-  max-height: 100vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Dark mode styles */
 .dark {
-  color-scheme: dark;
+    color-scheme: dark;
 }
 
 /* Tab bar styles - using theme variables */
 .tab-bar {
-  background-color: var(--theme-surface);
-  border-top: 1px solid var(--theme-border);
+    background-color: var(--theme-surface);
+    border-top: 1px solid var(--theme-border);
 }
 
 /* Status bar area */
 .status-bar-area {
-  height: var(--safe-area-top);
-  min-height: var(--safe-area-top);
-  width: 100%;
+    height: var(--safe-area-top);
+    min-height: var(--safe-area-top);
+    width: 100%;
 }
 
 /* Bottom safe area */
 .bottom-safe-area {
-  height: var(--safe-area-bottom);
-  min-height: var(--safe-area-bottom);
-  width: 100%;
+    height: var(--safe-area-bottom);
+    min-height: var(--safe-area-bottom);
+    width: 100%;
 }
 
 /* Main content area */
 .main-content {
-  flex: 1;
-  overflow: hidden;
-  position: relative;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
 }
 
 /* Scrollable content */
 .scrollable-content {
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Add button arc background */
 .add-button-arc {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: calc(var(--add-button-size) + 20px);
-  height: calc(var(--add-button-size) / 2 + 10px);
-  background-color: inherit;
-  border-radius: 50% 50% 0 0;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(var(--add-button-size) + 20px);
+    height: calc(var(--add-button-size) / 2 + 10px);
+    background-color: inherit;
+    border-radius: 50% 50% 0 0;
 }
-
-

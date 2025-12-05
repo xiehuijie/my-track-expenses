@@ -1,7 +1,9 @@
 # Copilot Custom Agent Description
 
 ## Project Overview
+
 **my-track-expenses** is a cross-platform expense tracking application built with:
+
 - **Vue 3 + TypeScript** for the frontend
 - **Vite** as the build tool
 - **Capacitor** for native mobile capabilities (Android/iOS)
@@ -13,6 +15,7 @@
 ## Agent Capabilities
 
 ### Code Review Agent
+
 - Review Vue 3 Composition API code patterns
 - Check TypeScript type safety
 - Validate Capacitor plugin usage
@@ -20,6 +23,7 @@
 - Review i18n message key usage
 
 ### Development Agent
+
 - Generate Vue 3 components with TypeScript
 - Create Pinia stores with proper typing
 - Implement database entities and services using TypeORM + SQLite
@@ -29,12 +33,14 @@
 ## Project Conventions
 
 ### Code Style
+
 - Use Vue 3 Composition API with `<script setup lang="ts">`
 - Follow ESLint + TypeScript-ESLint recommended rules
 - Use `@/` path alias for src directory imports
 - Prefer Vuetify components for UI elements
 
 ### File Structure
+
 ```
 src/
 ├── components/     # Reusable Vue components
@@ -47,23 +53,27 @@ src/
 ```
 
 ### Database Layer
+
 - Use @capacitor-community/sqlite for native SQLite access
 - Define TypeORM entities in `src/db/entities/`
 - Implement repository services in `src/db/services/`
 - Ensure all database operations are typed
 
 ### Theming
+
 - Support 5 primary theme colors: blue, green, yellow, pink, purple
 - Implement light/dark mode with system preference detection
 - Use CSS custom properties for dynamic theming
 - Follow Material Design 3 color guidelines
 
 ### Internationalization
+
 - Store translations in `src/locales/` as JSON files
 - Support zh-CN (Simplified Chinese) and en-US (English)
 - Use vue-i18n for translation management
 
 ### Mobile Considerations
+
 - Use Capacitor Safe Area plugin for device notches
 - Implement proper viewport handling (100vw × 100vh)
 - Disable page zoom and scroll on root container
