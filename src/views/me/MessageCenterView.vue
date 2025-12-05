@@ -15,19 +15,23 @@ interface Message {
     type: 'system' | 'reminder' | 'promotion';
 }
 
+// Configuration constants
+const PAGE_SIZE = 20;
+const MAX_MESSAGES = 100;
+const SCROLL_LOAD_THRESHOLD = 100;
+
 const messages = ref<Message[]>([]);
 const loading = ref(false);
 const hasMore = ref(true);
 const page = ref(1);
-const pageSize = 20;
 
 // Generate mock messages
 function generateMockMessages(pageNum: number): Message[] {
     const types: ('system' | 'reminder' | 'promotion')[] = ['system', 'reminder', 'promotion'];
     const mockMessages: Message[] = [];
 
-    for (let i = 0; i < pageSize; i++) {
-        const id = (pageNum - 1) * pageSize + i + 1;
+    for (let i = 0; i < PAGE_SIZE; i++) {
+        const id = (pageNum - 1) * PAGE_SIZE + i + 1;
         const type = types[id % 3];
         const daysAgo = Math.floor(id / 3);
         const date = new Date();
@@ -116,7 +120,7 @@ async function loadMore() {
 
     const newMessages = generateMockMessages(page.value);
 
-    if (newMessages.length < pageSize) {
+    if (newMessages.length < PAGE_SIZE) {
         hasMore.value = false;
     }
 
@@ -124,8 +128,8 @@ async function loadMore() {
     page.value++;
     loading.value = false;
 
-    // Limit to 100 messages for demo
-    if (messages.value.length >= 100) {
+    // Limit messages for demo
+    if (messages.value.length >= MAX_MESSAGES) {
         hasMore.value = false;
     }
 }
@@ -140,8 +144,8 @@ function handleScroll(event: Event) {
     const scrollTop = target.scrollTop;
     const clientHeight = target.clientHeight;
 
-    // Load more when scrolled to bottom
-    if (scrollHeight - scrollTop - clientHeight < 100) {
+    // Load more when scrolled near bottom
+    if (scrollHeight - scrollTop - clientHeight < SCROLL_LOAD_THRESHOLD) {
         loadMore();
     }
 }
