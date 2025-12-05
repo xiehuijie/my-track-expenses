@@ -4,3 +4,4 @@ android
 *.min.js
 *.min.css
 package-lock.json
+.github/workflows/

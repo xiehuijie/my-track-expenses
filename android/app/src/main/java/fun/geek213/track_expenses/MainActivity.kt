@@ -3,7 +3,6 @@ package `fun`.geek213.track_expenses
 import android.os.Bundle
 import android.webkit.WebView
 import com.getcapacitor.BridgeActivity
-import `fun`.geek213.track_expenses.BuildConfig
 
 class MainActivity : BridgeActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
