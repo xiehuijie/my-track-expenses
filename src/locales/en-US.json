@@ -17,6 +17,8 @@
     },
     "expense": {
         "add": "Add Expense",
+        "addExpense": "Add Expense",
+        "history": "Expense History",
         "amount": "Amount",
         "description": "Description",
         "category": "Category",
@@ -62,7 +64,8 @@
         "loading": "Loading...",
         "error": "Error",
         "success": "Success",
-        "comingSoon": "Coming soon"
+        "comingSoon": "Coming soon",
+        "notifications": "Notifications"
     },
     "messages": {
         "title": "Message Center",

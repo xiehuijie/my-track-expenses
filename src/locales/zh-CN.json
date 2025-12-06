@@ -17,6 +17,8 @@
     },
     "expense": {
         "add": "添加支出",
+        "addExpense": "添加支出",
+        "history": "支出历史",
         "amount": "金额",
         "description": "描述",
         "category": "分类",
@@ -62,7 +64,8 @@
         "loading": "加载中...",
         "error": "错误",
         "success": "成功",
-        "comingSoon": "功能即将上线"
+        "comingSoon": "功能即将上线",
+        "notifications": "通知"
     },
     "messages": {
         "title": "消息中心",

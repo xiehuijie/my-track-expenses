@@ -142,61 +142,72 @@ function goToSettings() {
 </script>
 
 <template>
-    <div class="me-view" @scroll="handleScroll">
+    <div class="me-view">
+        <!-- Fixed action buttons - always visible at top right -->
+        <Transition name="fade">
+            <div v-if="!showAppBar" class="fixed-actions">
+                <v-btn icon="mdi-bell-outline" variant="text" color="white" size="small" :aria-label="t('common.notifications')" @click="goToMessages" />
+                <v-btn icon="mdi-cog-outline" variant="text" color="white" size="small" :aria-label="t('settings.title')" @click="goToSettings" />
+            </div>
+        </Transition>
+
         <!-- Scroll-aware App Bar -->
         <Transition name="app-bar-slide">
             <v-app-bar v-if="showAppBar" :color="primaryColor" class="scroll-app-bar">
                 <v-app-bar-title>{{ t('me.personalCenter') }}</v-app-bar-title>
                 <template #append>
-                    <v-btn icon="mdi-bell-outline" @click="goToMessages" />
-                    <v-btn icon="mdi-cog-outline" @click="goToSettings" />
+                    <v-btn icon="mdi-bell-outline" :aria-label="t('common.notifications')" @click="goToMessages" />
+                    <v-btn icon="mdi-cog-outline" :aria-label="t('settings.title')" @click="goToSettings" />
                 </template>
             </v-app-bar>
         </Transition>
 
-        <!-- Header with curved bottom -->
-        <div class="header-section" :style="{ backgroundColor: primaryColor }">
-            <!-- Top right action buttons -->
-            <div class="header-actions">
-                <v-btn icon="mdi-bell-outline" variant="text" color="white" size="small" @click="goToMessages" />
-                <v-btn icon="mdi-cog-outline" variant="text" color="white" size="small" @click="goToSettings" />
+        <!-- Scrollable content -->
+        <div class="scroll-content" @scroll="handleScroll">
+            <!-- Status bar area with primary color -->
+            <div class="status-bar-area" :style="{ backgroundColor: primaryColor }" />
+
+            <!-- Header with curved bottom -->
+            <div class="header-section" :style="{ backgroundColor: primaryColor }">
+                <div class="header-content">
+                    <v-avatar size="72" color="white">
+                        <v-icon icon="mdi-account" size="48" :color="primaryColor" />
+                    </v-avatar>
+                    <h2 class="header-title">{{ t('tabs.me') }}</h2>
+                </div>
+
+                <!-- Curved bottom with downward convex arc -->
+                <div class="header-curve">
+                    <svg viewBox="0 0 100 20" preserveAspectRatio="none">
+                        <path d="M0,0 L0,0 Q50,20 100,0 L100,0 Z" :fill="primaryColor" />
+                    </svg>
+                </div>
             </div>
 
-            <div class="header-content">
-                <v-avatar size="72" color="white">
-                    <v-icon icon="mdi-account" size="48" :color="primaryColor" />
-                </v-avatar>
-                <h2 class="header-title">{{ t('tabs.me') }}</h2>
+            <!-- Menu content area with gray background for better contrast -->
+            <div class="content-section" :class="{ 'content-section--light': !isDark }">
+                <v-list class="menu-list">
+                    <template v-for="(group, groupIndex) in menuGroups" :key="group.key">
+                        <v-list-subheader>{{ t(group.titleKey) }}</v-list-subheader>
+                        <v-list-item
+                            v-for="item in group.items"
+                            :key="item.key"
+                            :prepend-icon="item.icon"
+                            :title="t(item.titleKey)"
+                            :subtitle="t(item.subtitleKey)"
+                            @click="navigateTo(item.route)"
+                        >
+                            <template #append>
+                                <v-icon icon="mdi-chevron-right" size="small" />
+                            </template>
+                        </v-list-item>
+                        <v-divider v-if="groupIndex < menuGroups.length - 1" class="my-2" />
+                    </template>
+                </v-list>
             </div>
 
-            <!-- Curved bottom with downward arc -->
-            <div class="header-curve">
-                <svg viewBox="0 0 100 20" preserveAspectRatio="none">
-                    <path d="M0,0 L0,5 Q50,25 100,5 L100,0 Z" :fill="primaryColor" />
-                </svg>
-            </div>
-        </div>
-
-        <!-- Menu content area with gray background for better contrast -->
-        <div class="content-section" :class="{ 'content-section--light': !isDark }">
-            <v-list class="menu-list">
-                <template v-for="(group, groupIndex) in menuGroups" :key="group.key">
-                    <v-list-subheader>{{ t(group.titleKey) }}</v-list-subheader>
-                    <v-list-item
-                        v-for="item in group.items"
-                        :key="item.key"
-                        :prepend-icon="item.icon"
-                        :title="t(item.titleKey)"
-                        :subtitle="t(item.subtitleKey)"
-                        @click="navigateTo(item.route)"
-                    >
-                        <template #append>
-                            <v-icon icon="mdi-chevron-right" size="small" />
-                        </template>
-                    </v-list-item>
-                    <v-divider v-if="groupIndex < menuGroups.length - 1" class="my-2" />
-                </template>
-            </v-list>
+            <!-- Bottom spacer to prevent tab bar from blocking content -->
+            <div class="bottom-spacer" />
         </div>
     </div>
 </template>
@@ -204,38 +215,51 @@ function goToSettings() {
 <style scoped>
 .me-view {
     height: 100%;
+    position: relative;
+    background-color: var(--theme-background);
+}
+
+.scroll-content {
+    height: 100%;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    background-color: var(--theme-background);
+}
+
+/* Fixed action buttons that stay in place when scrolling */
+.fixed-actions {
+    position: fixed;
+    top: calc(env(safe-area-inset-top, 0px) + 8px);
+    right: 8px;
+    display: flex;
+    gap: 4px;
+    z-index: 999;
 }
 
 .scroll-app-bar {
     position: fixed !important;
-    top: env(safe-area-inset-top, 0px);
+    top: 0;
     left: 0;
     right: 0;
     z-index: 1000;
 }
 
-.header-section {
-    position: relative;
-    padding-top: calc(env(safe-area-inset-top, 0px) + 24px);
-    padding-bottom: 0;
+/* Status bar area with primary color */
+.status-bar-area {
+    height: env(safe-area-inset-top, 0px);
+    min-height: env(safe-area-inset-top, 0px);
+    width: 100%;
 }
 
-.header-actions {
-    position: absolute;
-    top: calc(env(safe-area-inset-top, 0px) + 8px);
-    right: 8px;
-    display: flex;
-    gap: 4px;
+.header-section {
+    position: relative;
+    padding-bottom: 0;
 }
 
 .header-content {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 24px 16px 32px;
+    padding: 48px 16px 32px;
     color: white;
 }
 
@@ -261,7 +285,7 @@ function goToSettings() {
 
 .content-section {
     padding: 0 16px 24px;
-    margin-top: -8px;
+    min-height: 100%;
 }
 
 .content-section--light {
@@ -274,6 +298,13 @@ function goToSettings() {
     overflow: hidden;
 }
 
+/* Bottom spacer to prevent tab bar from blocking content */
+.bottom-spacer {
+    height: calc(80px + env(safe-area-inset-bottom, 0px));
+    min-height: calc(80px + env(safe-area-inset-bottom, 0px));
+    width: 100%;
+}
+
 /* App bar slide transition */
 .app-bar-slide-enter-active,
 .app-bar-slide-leave-active {
@@ -283,5 +314,16 @@ function goToSettings() {
 .app-bar-slide-enter-from,
 .app-bar-slide-leave-to {
     transform: translateY(-100%);
+}
+
+/* Fade transition for fixed buttons */
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
 }
 </style>
