@@ -68,6 +68,7 @@
         "title": "Message Center",
         "empty": "No messages",
         "noMore": "No more messages",
+        "unread": "Unread",
         "time": {
             "today": "Today",
             "yesterday": "Yesterday",

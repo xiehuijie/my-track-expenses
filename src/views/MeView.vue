@@ -264,7 +264,7 @@ function goToSettings() {
 
 .scroll-app-bar {
     position: fixed !important;
-    top: 0;
+    top: env(safe-area-inset-top, 0px);
     left: 0;
     right: 0;
     z-index: 1000;

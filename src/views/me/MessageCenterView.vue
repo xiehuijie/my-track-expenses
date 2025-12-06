@@ -18,6 +18,7 @@ interface Message {
 // Configuration constants
 const PAGE_SIZE = 20;
 const MAX_MESSAGES = 100;
+// Distance in pixels from the bottom of the scroll container before triggering the next page load
 const SCROLL_LOAD_THRESHOLD = 100;
 
 const messages = ref<Message[]>([]);
@@ -34,8 +35,8 @@ function generateMockMessages(pageNum: number): Message[] {
         const id = (pageNum - 1) * PAGE_SIZE + i + 1;
         const type = types[id % 3];
         const daysAgo = Math.floor(id / 3);
-        const date = new Date();
-        date.setDate(date.getDate() - daysAgo);
+        // Use explicit date calculation to avoid potential issues with date mutation
+        const date = new Date(Date.now() - daysAgo * 24 * 60 * 60 * 1000);
 
         let title = '';
         let content = '';
@@ -120,10 +121,6 @@ async function loadMore() {
 
     const newMessages = generateMockMessages(page.value);
 
-    if (newMessages.length < PAGE_SIZE) {
-        hasMore.value = false;
-    }
-
     messages.value.push(...newMessages);
     page.value++;
     loading.value = false;
@@ -138,16 +135,25 @@ function markAsRead(message: Message) {
     message.read = true;
 }
 
-function handleScroll(event: Event) {
-    const target = event.target as HTMLElement;
-    const scrollHeight = target.scrollHeight;
-    const scrollTop = target.scrollTop;
-    const clientHeight = target.clientHeight;
+// Throttle scroll handler to improve performance on lower-end devices
+let scrollThrottleTimer: ReturnType<typeof setTimeout> | null = null;
+const SCROLL_THROTTLE_MS = 100;
 
-    // Load more when scrolled near bottom
-    if (scrollHeight - scrollTop - clientHeight < SCROLL_LOAD_THRESHOLD) {
-        loadMore();
-    }
+function handleScroll(event: Event) {
+    if (scrollThrottleTimer) return;
+
+    scrollThrottleTimer = setTimeout(() => {
+        scrollThrottleTimer = null;
+        const target = event.target as HTMLElement;
+        const scrollHeight = target.scrollHeight;
+        const scrollTop = target.scrollTop;
+        const clientHeight = target.clientHeight;
+
+        // Load more when scrolled near bottom
+        if (scrollHeight - scrollTop - clientHeight < SCROLL_LOAD_THRESHOLD) {
+            loadMore();
+        }
+    }, SCROLL_THROTTLE_MS);
 }
 
 onMounted(() => {
@@ -183,7 +189,12 @@ onMounted(() => {
                     v-for="message in messages"
                     :key="message.id"
                     :class="{ 'message-unread': !message.read }"
+                    role="button"
+                    tabindex="0"
+                    :aria-label="`${message.title}${!message.read ? ' - ' + t('messages.unread') : ''}`"
                     @click="markAsRead(message)"
+                    @keydown.enter="markAsRead(message)"
+                    @keydown.space.prevent="markAsRead(message)"
                 >
                     <template #prepend>
                         <v-avatar
@@ -269,7 +280,6 @@ onMounted(() => {
 .message-content {
     display: -webkit-box;
     -webkit-line-clamp: 2;
-    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }

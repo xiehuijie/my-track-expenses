@@ -28,7 +28,6 @@ const vuetifyTheme = computed(() => {
 
 // Track navigation direction for slide transitions
 const transitionName = ref('slide-right');
-const previousPath = ref(route.path);
 
 watch(
     () => route.path,
@@ -50,8 +49,6 @@ watch(
             const oldDepth = oldPath.split('/').filter(Boolean).length;
             transitionName.value = newDepth >= oldDepth ? 'slide-right' : 'slide-left';
         }
-
-        previousPath.value = newPath;
     }
 );
 
