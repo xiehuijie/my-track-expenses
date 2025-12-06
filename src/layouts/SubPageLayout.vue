@@ -24,6 +24,9 @@ function goBack() {
 
 <template>
     <div class="sub-page-layout">
+        <!-- Status bar area -->
+        <div class="status-bar-area" :style="{ backgroundColor: primaryColor }" />
+
         <!-- App Bar -->
         <v-app-bar :color="primaryColor">
             <v-btn v-if="showBack" icon="mdi-arrow-left" @click="goBack" />
@@ -50,6 +53,12 @@ function goBack() {
     width: 100%;
     height: 100%;
     background-color: var(--theme-background);
+}
+
+.status-bar-area {
+    height: env(safe-area-inset-top, 0px);
+    min-height: env(safe-area-inset-top, 0px);
+    width: 100%;
 }
 
 .main-content {

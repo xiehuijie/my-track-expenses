@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
+import { useAppConfigStore } from '@/stores/appConfig';
+import { computed } from 'vue';
 
 const { t } = useI18n();
 const router = useRouter();
+const appConfig = useAppConfigStore();
+
+const primaryColor = computed(() => appConfig.primaryColor);
 
 function goBack() {
     router.back();
@@ -12,7 +17,8 @@ function goBack() {
 
 <template>
     <div class="page-container">
-        <v-app-bar>
+        <div class="status-bar-area" :style="{ backgroundColor: primaryColor }" />
+        <v-app-bar :color="primaryColor">
             <v-btn icon="mdi-arrow-left" @click="goBack" />
             <v-app-bar-title>{{ t('me.books.title') }}</v-app-bar-title>
         </v-app-bar>
@@ -34,5 +40,11 @@ function goBack() {
     height: 100%;
     display: flex;
     flex-direction: column;
+}
+
+.status-bar-area {
+    height: env(safe-area-inset-top, 0px);
+    min-height: env(safe-area-inset-top, 0px);
+    width: 100%;
 }
 </style>
