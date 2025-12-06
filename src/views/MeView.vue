@@ -318,7 +318,7 @@ function goToSettings() {
 }
 
 .content-section--light {
-    background-color: #f5f5f5;
+    background-color: var(--theme-surface-variant);
 }
 
 .menu-list {
