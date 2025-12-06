@@ -146,8 +146,8 @@ function goToSettings() {
         <!-- Fixed action buttons - always visible at top right -->
         <Transition name="fade">
             <div v-if="!showAppBar" class="fixed-actions">
-                <v-btn icon="mdi-bell-outline" variant="text" color="white" size="small" @click="goToMessages" />
-                <v-btn icon="mdi-cog-outline" variant="text" color="white" size="small" @click="goToSettings" />
+                <v-btn icon="mdi-bell-outline" variant="text" color="white" size="small" :aria-label="t('common.notifications')" @click="goToMessages" />
+                <v-btn icon="mdi-cog-outline" variant="text" color="white" size="small" :aria-label="t('settings.title')" @click="goToSettings" />
             </div>
         </Transition>
 
@@ -156,8 +156,8 @@ function goToSettings() {
             <v-app-bar v-if="showAppBar" :color="primaryColor" class="scroll-app-bar">
                 <v-app-bar-title>{{ t('me.personalCenter') }}</v-app-bar-title>
                 <template #append>
-                    <v-btn icon="mdi-bell-outline" @click="goToMessages" />
-                    <v-btn icon="mdi-cog-outline" @click="goToSettings" />
+                    <v-btn icon="mdi-bell-outline" :aria-label="t('common.notifications')" @click="goToMessages" />
+                    <v-btn icon="mdi-cog-outline" :aria-label="t('settings.title')" @click="goToSettings" />
                 </template>
             </v-app-bar>
         </Transition>
@@ -241,7 +241,6 @@ function goToSettings() {
     left: 0;
     right: 0;
     z-index: 1000;
-    padding-top: env(safe-area-inset-top, 0px);
 }
 
 /* Status bar area with primary color */

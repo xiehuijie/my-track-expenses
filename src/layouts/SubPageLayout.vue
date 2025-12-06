@@ -93,12 +93,13 @@ function handleOverflowActionClick(action: ActionItem) {
                     :key="action.key"
                     :icon="action.icon"
                     :disabled="action.disabled"
+                    :aria-label="action.label"
                     @click="handleActionClick(action)"
                 />
                 <!-- Overflow menu -->
                 <v-menu v-if="hasOverflow" v-model="showOverflowMenu" location="bottom end">
                     <template #activator="{ props: menuProps }">
-                        <v-btn icon="mdi-dots-vertical" v-bind="menuProps" />
+                        <v-btn icon="mdi-dots-vertical" v-bind="menuProps" aria-label="More actions" />
                     </template>
                     <v-list>
                         <v-list-item

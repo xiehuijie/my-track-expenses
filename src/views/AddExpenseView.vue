@@ -55,7 +55,7 @@ const submitForm = async () => {
                     <v-form ref="form" @submit.prevent="submitForm">
                         <v-text-field
                             v-model.number="amount"
-                            label="Amount"
+                            :label="t('expense.amount')"
                             type="number"
                             prefix="$"
                             :rules="[rules.required, rules.positiveNumber]"
@@ -65,7 +65,7 @@ const submitForm = async () => {
 
                         <v-text-field
                             v-model="description"
-                            label="Description"
+                            :label="t('expense.description')"
                             :rules="[rules.required]"
                             variant="outlined"
                             class="mb-4"
@@ -74,7 +74,7 @@ const submitForm = async () => {
                         <v-select
                             v-model="category"
                             :items="categories"
-                            label="Category"
+                            :label="t('expense.category')"
                             :rules="[rules.required]"
                             variant="outlined"
                             class="mb-4"
@@ -82,7 +82,7 @@ const submitForm = async () => {
 
                         <v-text-field
                             v-model="date"
-                            label="Date"
+                            :label="t('expense.date')"
                             type="date"
                             :rules="[rules.required]"
                             variant="outlined"
@@ -90,7 +90,7 @@ const submitForm = async () => {
                         />
 
                         <v-btn type="submit" color="primary" variant="elevated" block size="large" class="mt-4">
-                            Save Expense
+                            {{ t('expense.save') }}
                         </v-btn>
                     </v-form>
                 </v-card-text>

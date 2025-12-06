@@ -36,7 +36,7 @@ onMounted(async () => {
                 <v-card-text class="pa-4">
                     <v-card color="primary" variant="tonal" class="mb-4">
                         <v-card-text class="text-center">
-                            <div class="text-overline">Total Expenses</div>
+                            <div class="text-overline">{{ t('home.totalExpenses') }}</div>
                             <div class="text-h4 font-weight-bold">
                                 <v-progress-circular v-if="isLoading" indeterminate color="primary" size="28" />
                                 <span v-else>${{ formattedTotal }}</span>
@@ -76,7 +76,7 @@ onMounted(async () => {
                         </v-list-item>
                     </v-list>
 
-                    <v-alert v-else type="info" variant="tonal"> No expenses recorded yet. </v-alert>
+                    <v-alert v-else type="info" variant="tonal"> {{ t('home.noExpenses') }} </v-alert>
                 </v-card-text>
             </v-card>
 
@@ -88,7 +88,7 @@ onMounted(async () => {
                 prepend-icon="mdi-plus"
                 @click="router.push('/add')"
             >
-                Add New Expense
+                {{ t('home.addExpense') }}
             </v-btn>
         </v-container>
     </SubPageLayout>
