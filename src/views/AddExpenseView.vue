@@ -15,17 +15,7 @@ const description = ref('');
 const category = ref('');
 const date = ref(new Date().toISOString().split('T')[0]);
 
-const categories = [
-    'Food & Dining',
-    'Transportation',
-    'Shopping',
-    'Entertainment',
-    'Bills & Utilities',
-    'Healthcare',
-    'Education',
-    'Travel',
-    'Other',
-];
+const categories = ['Food & Dining', 'Transportation', 'Shopping', 'Entertainment', 'Bills & Utilities', 'Healthcare', 'Education', 'Travel', 'Other'];
 
 const rules = {
     required: (v: string | number | null) => !!v || v === 0 || 'This field is required',
@@ -63,13 +53,7 @@ const submitForm = async () => {
                             class="mb-4"
                         />
 
-                        <v-text-field
-                            v-model="description"
-                            :label="t('expense.description')"
-                            :rules="[rules.required]"
-                            variant="outlined"
-                            class="mb-4"
-                        />
+                        <v-text-field v-model="description" :label="t('expense.description')" :rules="[rules.required]" variant="outlined" class="mb-4" />
 
                         <v-select
                             v-model="category"
@@ -80,14 +64,7 @@ const submitForm = async () => {
                             class="mb-4"
                         />
 
-                        <v-text-field
-                            v-model="date"
-                            :label="t('expense.date')"
-                            type="date"
-                            :rules="[rules.required]"
-                            variant="outlined"
-                            class="mb-4"
-                        />
+                        <v-text-field v-model="date" :label="t('expense.date')" type="date" :rules="[rules.required]" variant="outlined" class="mb-4" />
 
                         <v-btn type="submit" color="primary" variant="elevated" block size="large" class="mt-4">
                             {{ t('expense.save') }}

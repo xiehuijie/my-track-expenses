@@ -74,18 +74,8 @@ function handleLocaleChange(newLocale: SupportedLocale) {
                     </template>
                     <v-list-item-title>{{ t('settings.themeColor') }}</v-list-item-title>
                     <template #append>
-                        <v-btn-toggle
-                            :model-value="appConfig.themeColor"
-                            mandatory
-                            density="compact"
-                            @update:model-value="handleThemeColorChange"
-                        >
-                            <v-btn
-                                v-for="option in themeColorOptions"
-                                :key="option.value"
-                                :value="option.value"
-                                size="small"
-                            >
+                        <v-btn-toggle :model-value="appConfig.themeColor" mandatory density="compact" @update:model-value="handleThemeColorChange">
+                            <v-btn v-for="option in themeColorOptions" :key="option.value" :value="option.value" size="small">
                                 <v-icon icon="mdi-circle" :color="themeColors[option.value].main" />
                             </v-btn>
                         </v-btn-toggle>

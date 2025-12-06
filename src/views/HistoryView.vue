@@ -64,13 +64,7 @@ onMounted(async () => {
                             <template #append>
                                 <div class="d-flex align-center">
                                     <span class="text-h6 text-error mr-2">${{ expense.amount.toFixed(2) }}</span>
-                                    <v-btn
-                                        icon="mdi-delete"
-                                        variant="text"
-                                        color="error"
-                                        size="small"
-                                        @click="deleteExpense(expense.id)"
-                                    />
+                                    <v-btn icon="mdi-delete" variant="text" color="error" size="small" @click="deleteExpense(expense.id)" />
                                 </div>
                             </template>
                         </v-list-item>
@@ -80,14 +74,7 @@ onMounted(async () => {
                 </v-card-text>
             </v-card>
 
-            <v-btn
-                color="primary"
-                variant="elevated"
-                block
-                size="large"
-                prepend-icon="mdi-plus"
-                @click="router.push('/add')"
-            >
+            <v-btn color="primary" variant="elevated" block size="large" prepend-icon="mdi-plus" @click="router.push('/add')">
                 {{ t('home.addExpense') }}
             </v-btn>
         </v-container>

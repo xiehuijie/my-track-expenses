@@ -102,12 +102,7 @@ function handleOverflowActionClick(action: ActionItem) {
                         <v-btn icon="mdi-dots-vertical" v-bind="menuProps" aria-label="More actions" />
                     </template>
                     <v-list>
-                        <v-list-item
-                            v-for="action in overflowActions"
-                            :key="action.key"
-                            :disabled="action.disabled"
-                            @click="handleOverflowActionClick(action)"
-                        >
+                        <v-list-item v-for="action in overflowActions" :key="action.key" :disabled="action.disabled" @click="handleOverflowActionClick(action)">
                             <template #prepend>
                                 <v-icon :icon="action.icon" />
                             </template>
