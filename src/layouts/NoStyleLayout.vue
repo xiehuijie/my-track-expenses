@@ -6,14 +6,14 @@
 </script>
 
 <template>
-  <div class="no-style-layout">
-    <slot />
-  </div>
+    <div class="no-style-layout">
+        <slot />
+    </div>
 </template>
 
 <style scoped>
 .no-style-layout {
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
 }
 </style>

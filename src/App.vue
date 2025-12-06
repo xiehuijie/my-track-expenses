@@ -89,29 +89,14 @@ onUnmounted(async () => {
     <v-app :theme="vuetifyTheme">
         <MainLayout v-if="useMainLayout">
             <RouterView v-slot="{ Component }">
-                <transition
-                    name="fade-slide"
-                    mode="out-in"
-                >
-                    <component
-                        :is="Component"
-                        :key="route.path"
-                    />
+                <transition name="fade-slide" mode="out-in">
+                    <component :is="Component" :key="route.path" />
                 </transition>
             </RouterView>
         </MainLayout>
-        <RouterView
-            v-else
-            v-slot="{ Component }"
-        >
-            <transition
-                :name="transitionName"
-                mode="out-in"
-            >
-                <component
-                    :is="Component"
-                    :key="route.path"
-                />
+        <RouterView v-else v-slot="{ Component }">
+            <transition :name="transitionName" mode="out-in">
+                <component :is="Component" :key="route.path" />
             </transition>
         </RouterView>
     </v-app>

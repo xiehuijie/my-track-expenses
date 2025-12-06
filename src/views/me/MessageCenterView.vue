@@ -48,7 +48,7 @@ function generateMockMessages(pageNum: number): Message[] {
                 break;
             case 'reminder':
                 title = t('messages.mock.reminderTitle');
-                content = t('messages.mock.reminderContent', { days: id % 7 + 1 });
+                content = t('messages.mock.reminderContent', { days: (id % 7) + 1 });
                 break;
             case 'promotion':
                 title = t('messages.mock.promotionTitle');
@@ -163,28 +163,15 @@ onMounted(() => {
 
 <template>
     <SubPageLayout :title="t('messages.title')">
-        <div
-            class="message-center"
-            @scroll="handleScroll"
-        >
+        <div class="message-center" @scroll="handleScroll">
             <!-- Empty state -->
-            <div
-                v-if="messages.length === 0 && !loading"
-                class="empty-state"
-            >
-                <v-icon
-                    icon="mdi-email-outline"
-                    size="64"
-                    color="grey"
-                />
+            <div v-if="messages.length === 0 && !loading" class="empty-state">
+                <v-icon icon="mdi-email-outline" size="64" color="grey" />
                 <p class="text-grey mt-4">{{ t('messages.empty') }}</p>
             </div>
 
             <!-- Message list -->
-            <v-list
-                v-else
-                class="message-list"
-            >
+            <v-list v-else class="message-list">
                 <v-list-item
                     v-for="message in messages"
                     :key="message.id"
@@ -197,15 +184,8 @@ onMounted(() => {
                     @keydown.space.prevent="markAsRead(message)"
                 >
                     <template #prepend>
-                        <v-avatar
-                            :color="getMessageColor(message.type)"
-                            size="40"
-                        >
-                            <v-icon
-                                :icon="getMessageIcon(message.type)"
-                                color="white"
-                                size="20"
-                            />
+                        <v-avatar :color="getMessageColor(message.type)" size="40">
+                            <v-icon :icon="getMessageIcon(message.type)" color="white" size="20" />
                         </v-avatar>
                     </template>
 
@@ -219,34 +199,19 @@ onMounted(() => {
                     <template #append>
                         <div class="message-meta">
                             <span class="message-time">{{ message.time }}</span>
-                            <v-badge
-                                v-if="!message.read"
-                                dot
-                                color="error"
-                                inline
-                            />
+                            <v-badge v-if="!message.read" dot color="error" inline />
                         </div>
                     </template>
                 </v-list-item>
             </v-list>
 
             <!-- Loading indicator -->
-            <div
-                v-if="loading"
-                class="loading-indicator"
-            >
-                <v-progress-circular
-                    indeterminate
-                    color="primary"
-                    size="32"
-                />
+            <div v-if="loading" class="loading-indicator">
+                <v-progress-circular indeterminate color="primary" size="32" />
             </div>
 
             <!-- No more messages -->
-            <div
-                v-if="!hasMore && messages.length > 0"
-                class="no-more"
-            >
+            <div v-if="!hasMore && messages.length > 0" class="no-more">
                 <span class="text-grey">{{ t('messages.noMore') }}</span>
             </div>
         </div>

@@ -142,92 +142,45 @@ function goToSettings() {
 </script>
 
 <template>
-    <div
-        class="me-view"
-        @scroll="handleScroll"
-    >
+    <div class="me-view" @scroll="handleScroll">
         <!-- Scroll-aware App Bar -->
         <Transition name="app-bar-slide">
-            <v-app-bar
-                v-if="showAppBar"
-                :color="primaryColor"
-                class="scroll-app-bar"
-            >
+            <v-app-bar v-if="showAppBar" :color="primaryColor" class="scroll-app-bar">
                 <v-app-bar-title>{{ t('me.personalCenter') }}</v-app-bar-title>
                 <template #append>
-                    <v-btn
-                        icon="mdi-bell-outline"
-                        @click="goToMessages"
-                    />
-                    <v-btn
-                        icon="mdi-cog-outline"
-                        @click="goToSettings"
-                    />
+                    <v-btn icon="mdi-bell-outline" @click="goToMessages" />
+                    <v-btn icon="mdi-cog-outline" @click="goToSettings" />
                 </template>
             </v-app-bar>
         </Transition>
 
         <!-- Header with curved bottom -->
-        <div
-            class="header-section"
-            :style="{ backgroundColor: primaryColor }"
-        >
+        <div class="header-section" :style="{ backgroundColor: primaryColor }">
             <!-- Top right action buttons -->
             <div class="header-actions">
-                <v-btn
-                    icon="mdi-bell-outline"
-                    variant="text"
-                    color="white"
-                    size="small"
-                    @click="goToMessages"
-                />
-                <v-btn
-                    icon="mdi-cog-outline"
-                    variant="text"
-                    color="white"
-                    size="small"
-                    @click="goToSettings"
-                />
+                <v-btn icon="mdi-bell-outline" variant="text" color="white" size="small" @click="goToMessages" />
+                <v-btn icon="mdi-cog-outline" variant="text" color="white" size="small" @click="goToSettings" />
             </div>
 
             <div class="header-content">
-                <v-avatar
-                    size="72"
-                    color="white"
-                >
-                    <v-icon
-                        icon="mdi-account"
-                        size="48"
-                        :color="primaryColor"
-                    />
+                <v-avatar size="72" color="white">
+                    <v-icon icon="mdi-account" size="48" :color="primaryColor" />
                 </v-avatar>
                 <h2 class="header-title">{{ t('tabs.me') }}</h2>
             </div>
 
             <!-- Curved bottom with downward arc -->
             <div class="header-curve">
-                <svg
-                    viewBox="0 0 100 20"
-                    preserveAspectRatio="none"
-                >
-                    <path
-                        d="M0,0 L0,5 Q50,25 100,5 L100,0 Z"
-                        :fill="primaryColor"
-                    />
+                <svg viewBox="0 0 100 20" preserveAspectRatio="none">
+                    <path d="M0,0 L0,5 Q50,25 100,5 L100,0 Z" :fill="primaryColor" />
                 </svg>
             </div>
         </div>
 
         <!-- Menu content area with gray background for better contrast -->
-        <div
-            class="content-section"
-            :class="{ 'content-section--light': !isDark }"
-        >
+        <div class="content-section" :class="{ 'content-section--light': !isDark }">
             <v-list class="menu-list">
-                <template
-                    v-for="(group, groupIndex) in menuGroups"
-                    :key="group.key"
-                >
+                <template v-for="(group, groupIndex) in menuGroups" :key="group.key">
                     <v-list-subheader>{{ t(group.titleKey) }}</v-list-subheader>
                     <v-list-item
                         v-for="item in group.items"
@@ -238,16 +191,10 @@ function goToSettings() {
                         @click="navigateTo(item.route)"
                     >
                         <template #append>
-                            <v-icon
-                                icon="mdi-chevron-right"
-                                size="small"
-                            />
+                            <v-icon icon="mdi-chevron-right" size="small" />
                         </template>
                     </v-list-item>
-                    <v-divider
-                        v-if="groupIndex < menuGroups.length - 1"
-                        class="my-2"
-                    />
+                    <v-divider v-if="groupIndex < menuGroups.length - 1" class="my-2" />
                 </template>
             </v-list>
         </div>
