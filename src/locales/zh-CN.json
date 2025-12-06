@@ -64,7 +64,27 @@
         "success": "成功",
         "comingSoon": "功能即将上线"
     },
+    "messages": {
+        "title": "消息中心",
+        "empty": "暂无消息",
+        "noMore": "没有更多消息了",
+        "unread": "未读",
+        "time": {
+            "today": "今天",
+            "yesterday": "昨天",
+            "daysAgo": "{days}天前"
+        },
+        "mock": {
+            "systemTitle": "系统更新 v{version}",
+            "systemContent": "我们添加了新功能并修复了一些问题，立即更新以获得最佳体验。",
+            "reminderTitle": "记账提醒",
+            "reminderContent": "您已经{days}天没有记账了，别忘了记录您的支出哦！",
+            "promotionTitle": "新功能上线",
+            "promotionContent": "试试我们新的统计功能，更好地了解您的消费习惯。"
+        }
+    },
     "me": {
+        "personalCenter": "个人中心",
         "groups": {
             "accounting": "记账相关",
             "advanced": "高级操作",
